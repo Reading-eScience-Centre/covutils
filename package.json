@@ -1,6 +1,6 @@
 {
   "name": "covutils",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "license": "BSD-3-Clause",
   "description": "Utilities for creating, transforming, and handling Coverage Data objects.",
   "repository": {
@@ -15,21 +15,9 @@
   },
   "main": "lib/main.js",
   "files": [
-    "src/",
     "lib/",
     "covutils.*"
   ],
-  "jspm": {
-    "registry": "npm",
-    "format": "esm",
-    "files": [
-      "src/"
-    ],
-    "directories": {
-      "lib": "src"
-    },
-    "main": "main.js"
-  },
   "scripts": {
     "docs": "esdoc -c esdoc.json",
     "style": "standard",

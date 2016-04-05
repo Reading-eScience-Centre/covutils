@@ -21,6 +21,8 @@ export function normalizeIndexSubsetConstraints (domain, constraints) {
     if (typeof constraints[axisName] === 'number') {
       let constraint = constraints[axisName]
       normalizedConstraints[axisName] = {start: constraint, stop: constraint + 1}
+    } else {
+      normalizedConstraints[axisName] = constraints[axisName]
     }
 
     let {start = 0, 
@@ -69,8 +71,11 @@ export function subsetDomainByIndex (domain, constraints) {
       newbounds = bounds
     } else if (step === 1) {
       // TypedArray has subarray which creates a view, while Array has slice which makes a copy
-      let sub = coords.subarray || coords.slice
-      newcoords = sub(start, stop)
+      if (coords.subarray) {
+        newcoords = coords.subarray(start, stop)
+      } else {
+        newcoords = coords.slice(start, stop)
+      }      
       if (bounds) {
         newbounds = {
           get: i => bounds.get(start + i)

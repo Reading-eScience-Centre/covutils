@@ -25,7 +25,10 @@
     "files": [
       "src/"
     ],
-    "main": "src/main.js"
+    "directories": {
+      "lib": "src"
+    },
+    "main": "main.js"
   },
   "scripts": {
     "docs": "esdoc -c esdoc.json",

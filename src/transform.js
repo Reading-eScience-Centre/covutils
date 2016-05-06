@@ -68,8 +68,9 @@ export function toCoverage (domain) {
 
   let cov = {
     type: COVERAGE,
-    profiles: [],
+    // TODO remove domainProfiles in favour of domainType at some point
     domainProfiles: domain.profiles,
+    domainType: domain.domainType,
     parameters,
     loadDomain: () => Promise.resolve(domain),
     loadRange

@@ -51,8 +51,10 @@ export function subsetDomainByIndex (domain, constraints) {
   // subset the axis arrays of the domain (immediately + cached)
   let newdomain = {
     type: DOMAIN,
+    // TODO remove profiles in favour of domainType at some point
     // TODO are the profiles still valid?
     profiles: domain.profiles,
+    domainType: domain.domainType,
     axes: new Map(domain.axes),
     referencing: domain.referencing
   }
@@ -155,8 +157,8 @@ export function subsetCoverageByIndex (cov, constraints) {
     let newcov = {
       type: COVERAGE,
       // TODO are the profiles still valid?
-      profiles: cov.profiles,
       domainProfiles: cov.domainProfiles,
+      domainType: cov.domainType,
       parameters: cov.parameters,
       loadDomain: () => Promise.resolve(newdomain),
       loadRange,

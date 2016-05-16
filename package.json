@@ -1,6 +1,6 @@
 {
   "name": "covutils",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "license": "BSD-3-Clause",
   "description": "Utilities for creating, transforming, and handling Coverage Data objects.",
   "repository": {
@@ -18,6 +18,9 @@
     "lib/",
     "covutils.*"
   ],
+  "dependencies": {
+    "ndarray": "^1.0.18"
+  },
   "scripts": {
     "docs": "esdoc -c esdoc.json",
     "style": "standard",

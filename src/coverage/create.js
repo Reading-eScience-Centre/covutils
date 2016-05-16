@@ -6,16 +6,21 @@ import {subsetCoverageByIndex, subsetCoverageByValue} from './subset.js'
  * Wraps a Domain into a Coverage object by adding dummy parameter and range data.
  * 
  * @param {Domain} domain the Domain object
+ * @param {array} [options.gridAxes] The horizontal grid axis names, used for checkerboard pattern.
  * @return {Coverage}
  */
-export function toCoverage (domain) {
+export function fromDomain (domain, options={}) {
   checkDomain(domain)
+  
+  let {
+    gridAxes: [x,y] = ['x','y']
+  } = options
   
   let dummyKey = 'domain'
   let dummyLabel = 'Domain'
-  
-  let assumeGrid = domain.axes.has('x') && domain.axes.has('y') && 
-                   (domain.axes.get('x').values.length > 1 || domain.axes.get('y').values.length > 1)
+    
+  let assumeGrid = domain.axes.has(x) && domain.axes.has(y) && 
+                   (domain.axes.get(x).values.length > 1 || domain.axes.get(y).values.length > 1)
   let categories
   let categoryEncoding
   const a = 'a'

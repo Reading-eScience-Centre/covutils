@@ -1,6 +1,6 @@
 import {COVERAGE} from '../constants.js'
 import {checkDomain, checkCoverage} from '../validate.js'
-import {subsetCoverageByIndex, subsetCoverageByValue} from './subset.js'
+import {subsetByIndex, subsetByValue} from './subset.js'
 
 /**
  * Wraps a Domain into a Coverage object by adding dummy parameter and range data.
@@ -87,8 +87,8 @@ export function fromDomain (domain, options={}) {
 
 function addSubsetFunctions (cov) {
   checkCoverage(cov)    
-  cov.subsetByIndex = subsetCoverageByIndex.bind(null, cov)
-  cov.subsetByValue = subsetCoverageByValue.bind(null, cov)
+  cov.subsetByIndex = subsetByIndex.bind(null, cov)
+  cov.subsetByValue = subsetByValue.bind(null, cov)
 }
 
 function addLoadRangesFunction (cov) {

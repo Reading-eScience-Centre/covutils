@@ -25,7 +25,7 @@ const LongitudeAxisIndex = {
  * Return the reference system connection object for the given domain component,
  * or undefined if none exists.
  */
-function getReferenceObject (domain, component) {
+export function getReferenceObject (domain, component) {
   let ref = domain.referencing.find(ref => ref.components.indexOf(component) !== -1)
   return ref
 }

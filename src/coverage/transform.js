@@ -3,6 +3,7 @@ import ndarray from 'ndarray'
 import {COVERAGE} from '../constants.js'
 import {checkCoverage} from '../validate.js'
 import {shallowcopy} from '../util.js'
+import {addLoadRangesFunction} from './create.js'
 
 /**
  * Returns a copy of the given Coverage object with the parameters
@@ -109,6 +110,62 @@ export function mapRange (cov, key, fn, dataType) {
     subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => mapRange(sub, key, fn, dataType))
   }
   
+  return newcov
+}
+
+/**
+ * 
+ * @example
+ * var cov = ... // has parameters 'NIR', 'red', 'green', 'blue'
+ * var newcov = withDerivedParameter(cov, {
+ *   parameter: {
+ *     key: 'NDVI',
+ *     observedProperty: {
+ *       label: { en: 'Normalized Differenced Vegetation Index' }
+ *     }
+ *   },
+ *   inputParameters: ['NIR','red'],
+ *   dataType: 'float',
+ *   fn: function (obj, nirRange, redRange) {
+ *     var nir = nirRange.get(obj)
+ *     var red = redRange.get(obj)
+ *     if (nir === null || red === null) return null
+ *     return (nir - red) / (nir + red)
+ *   }
+ * })
+ */
+export function withDerivedParameter (cov, options) {
+  checkCoverage(cov)
+  let {parameter, inputParameters, dataType='float', fn} = options
+  
+  let parameters = new Map(cov.parameters)
+  parameters.set(parameter.key, parameter)
+  
+  let loadDerivedRange = () => cov.loadRanges(inputParameters).then(inputRanges => {
+    let inputRangesArr = inputParameters.map(key => inputRanges.get(key))
+    let shape = inputRangesArr[0].shape
+    let range = {
+      shape,
+      dataType,
+      get: obj => fn(obj, ...inputRangesArr)
+    }
+    return range
+  })
+  
+  let loadRange = paramKey => parameter.key === paramKey ? loadDerivedRange() : cov.loadRange(paramKey)
+  
+  let newcov = {
+    type: COVERAGE,
+    profiles: cov.profiles,
+    domainProfiles: cov.domainProfiles,
+    parameters,
+    loadDomain: () => cov.loadDomain(),
+    loadRange,
+    subsetByIndex: constraints => cov.subsetByIndex(constraints).then(sub => withDerivedParameter(sub, options)),
+    subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => withDerivedParameter(sub, options))
+  }
+  addLoadRangesFunction(newcov)
+    
   return newcov
 }
 

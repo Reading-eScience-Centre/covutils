@@ -170,6 +170,42 @@ export function withDerivedParameter (cov, options) {
 }
 
 /**
+ * 
+ * @example
+ * var cov = ... // has parameters 'NIR', 'red', 'green', 'blue'
+ * var newcov = withSimpleDerivedParameter(cov, {
+ *   parameter: {
+ *     key: 'NDVI',
+ *     observedProperty: {
+ *       label: { en: 'Normalized Differenced Vegetation Index' }
+ *     }
+ *   },
+ *   inputParameters: ['NIR','red'],
+ *   dataType: 'float',
+ *   fn: function (nir, red) {
+ *     return (nir - red) / (nir + red)
+ *   }
+ * })
+ */
+export function withSimpleDerivedParameter (cov, options) {
+  let {parameter, inputParameters, dataType, fn} = options
+  let options_ = {
+    parameter,
+    inputParameters,
+    dataType,
+    // TODO pre-compile if too slow
+    fn: (obj, ...ranges) => {
+      let vals = inputParameters.map((_,i) => ranges[i].get(obj))
+      if (vals.some(val => val === null)) {
+        return null
+      }
+      return fn(...vals)
+    }
+  }
+  return withDerivedParameter(cov, options_)
+}
+
+/**
  * Returns a copy of the given Coverage object where the 
  * range values which belong to domain areas outside the
  * given polygon are returned as null (no data).

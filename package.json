@@ -26,7 +26,7 @@
     "style": "standard",
     "transpile": "babel -d lib/ src/",
     "test": "npm run transpile && npm run testnode && npm run testkarma",
-    "testnode": "mocha --compilers js:babel-register",
+    "testnode": "mocha --recursive --compilers js:babel-register",
     "testkarma": "karma start --single-run",
     "karma": "karma start",
     "saucelabs": "karma start karma.conf-ci.js",

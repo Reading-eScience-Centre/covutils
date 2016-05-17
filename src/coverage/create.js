@@ -85,13 +85,13 @@ export function fromDomain (domain, options={}) {
   return cov
 }
 
-function addSubsetFunctions (cov) {
+export function addSubsetFunctions (cov) {
   checkCoverage(cov)    
   cov.subsetByIndex = subsetByIndex.bind(null, cov)
   cov.subsetByValue = subsetByValue.bind(null, cov)
 }
 
-function addLoadRangesFunction (cov) {
+export function addLoadRangesFunction (cov) {
   checkCoverage(cov)
   function loadRanges (keys) {
     if (!keys) {

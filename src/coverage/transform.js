@@ -1,6 +1,6 @@
 import ndarray from 'ndarray'
 
-import {COVJSON_GRID, COVERAGE} from './constants.js'
+import {COVERAGE} from '../constants.js'
 import {checkCoverage} from '../validate.js'
 import {shallowcopy} from '../util.js'
 
@@ -116,19 +116,14 @@ export function mapRange (cov, key, fn, dataType) {
  * Returns a copy of the given Coverage object where the 
  * range values which belong to domain areas outside the
  * given polygon are returned as null (no data).
- * 
- * Note that this function has support for CoverageJSON
- * domain types only.
- * 
+ *  
  * @param {Coverage} cov A Coverage object.
  * @param {Object} polygon A GeoJSON Polygon or MultiPolygon object.
+ * @param {array} [axes=['x','y']] The grid axes corresponding to the polygon coordinate components.
  * @returns {Promise<Coverage>}
  */
-export function maskByPolygon (cov, polygon) {
+export function maskByPolygon (cov, polygon, axes=['x','y']) {
   checkCoverage(cov)
-  if (cov.domainProfiles.indexOf(COVJSON_GRID) === -1) {
-    throw new Error('Only grids can be masked by polygon currently, domain profiles: ' + cov.domainProfiles)
-  }
   
   if (polygon.type === 'Polygon') {
     polygon = {
@@ -155,9 +150,11 @@ export function maskByPolygon (cov, polygon) {
     }
   }
   
+  let [X,Y] = [axes]
+  
   return cov.loadDomain().then(domain => {
-    let x = domain.axes.get('x').values
-    let y = domain.axes.get('y').values
+    let x = domain.axes.get(X).values
+    let y = domain.axes.get(Y).values
     let pnpolyCache = ndarray(new Uint8Array(x.length * y.length), [x.length, y.length])
 
     for (let i=0; i < x.length; i++) {
@@ -168,7 +165,7 @@ export function maskByPolygon (cov, polygon) {
     }
     
     let fn = (obj, range) => {
-      if (pnpolyCache.get(obj.x || 0, obj.y || 0)) {
+      if (pnpolyCache.get(obj[X] || 0, obj[Y] || 0)) {
         return range.get(obj)
       } else {
         return null

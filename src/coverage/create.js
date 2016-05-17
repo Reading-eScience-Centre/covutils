@@ -1,5 +1,5 @@
-import {COVERAGE} from './constants.js'
-import {checkDomain, checkCoverage} from './validate.js'
+import {COVERAGE} from '../constants.js'
+import {checkDomain, checkCoverage} from '../validate.js'
 import {subsetCoverageByIndex, subsetCoverageByValue} from './subset.js'
 
 /**

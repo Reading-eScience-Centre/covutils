@@ -1,4 +1,4 @@
-import {COVJSON_DATATYPE_TUPLE, COVJSON_DATATYPE_POLYGON} from './constants.js'
+import {COVJSON_DATATYPE_TUPLE, COVJSON_DATATYPE_POLYGON} from '../constants.js'
 
 const OPENGIS_CRS_PREFIX = 'http://www.opengis.net/def/crs/'
 

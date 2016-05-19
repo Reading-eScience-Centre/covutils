@@ -1,4 +1,4 @@
-import {COVERAGE} from '../constants.js'
+import {COVERAGE, DOMAIN} from '../constants.js'
 import {checkDomain, checkCoverage} from '../validate.js'
 import {subsetByIndex, subsetByValue} from './subset.js'
 
@@ -76,6 +76,119 @@ export function fromDomain (domain, options={}) {
     // TODO remove domainProfiles in favour of domainType at some point
     domainProfiles: domain.profiles,
     domainType: domain.domainType,
+    parameters,
+    loadDomain: () => Promise.resolve(domain),
+    loadRange
+  }
+  addLoadRangesFunction(cov)
+  addSubsetFunctions(cov)
+  return cov
+}
+
+/**
+ * Creates a Coverage with a single parameter from an xndarray object.
+ * 
+ * @example
+ * var arr = xndarray(new Float64Array(
+ *   [ 1,2,3,
+ *     4,5,6 ]), {
+ *   shape: [2,3],
+ *   names: ['y','x'],
+ *   coords: {
+ *     y: [10,12,14],
+ *     x: [100,101,102],
+ *     t: [new Date('2001-01-01')]
+ *   }
+ * })
+ * var cov = fromXndarray(arr, {
+ *   parameter: {
+ *     key: 'temperature',
+ *     observedProperty: {
+ *       label: {en: 'Air temperature'}
+ *     },
+ *     unit: { symbol: '°C' }
+ *   }
+ * })
+ * let param = cov.parameters.get('temperature')
+ * let unit = param.unit.symbol // °C 
+ * cov.loadRange('temperature').then(temps => {
+ *   let val = temps.get({x:0, y:1}) // val == 4
+ * })
+ * 
+ * @param {xndarray} xndarr - Coordinates must be primitive, not tuples etc.
+ * @param {object} [options] Options object.
+ * @param {Parameter} [options.parameter] Specifies the parameter, default parameter has a key of 'p1'.
+ * @param {string} [options.domainType] A domain type URI.
+ * @param {Array<object>} [options.referencing] Optional referencing system info,
+ *   defaults to longitude/latitude in WGS84 for x/y axes and ISO8601 time strings for t axis.
+ * @return {Coverage}
+ */
+export function fromXndarray (xndarr, options={}) {
+  let {parameter = {
+    key: 'p1',
+    observedProperty: {
+      label: {en: 'Parameter 1'}
+    }
+  }, referencing, domainType} = options
+
+  let parameters = new Map()
+  parameters.set(parameter.key, parameter)
+  
+  // assume lon/lat/ISO time for x/y/t by default, for convenience
+  if (!referencing) {
+    referencing = []
+    if (xndarr.coords.has('x') && xndarr.coords.has('y')) {
+      referencing.push({
+        components: ['x','y'],
+        system: {
+          type: 'GeodeticCRS',
+          id: 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
+        }
+      })
+    }
+    if (xndarr.coords.has('t')) {
+      referencing.push({
+        components: ['t'],
+        system: {
+          type: 'TemporalRS',
+          calendar: 'Gregorian'
+        }
+      })
+    }
+  }
+  
+  let axes = new Map()
+  for (let [axisName,vals1Dnd] of xndarr.coords) {
+    let values = new Array(vals1Dnd.size)
+    for (let i=0; i < vals1Dnd.size; i++) {
+      values[i] = vals1Dnd.get(i)
+    }
+    axes.set(axisName, {
+      key: axisName,
+      components: [axisName],
+      values
+    })
+  }
+  
+  let domain = {
+    type: DOMAIN,
+    domainType,
+    referencing,
+    axes
+  }
+  
+  let shape = new Map([...domain.axes].map(([name, axis]) => [name, axis.values.length]))
+  let dataType = xndarr.dtype.indexOf('int') !== -1 ? 'integer' : 'float'
+
+  let loadRange = () => Promise.resolve({
+    shape,
+    dataType,
+    get: xndarr.xget.bind(xndarr)
+  })
+  
+  let cov = {
+    type: COVERAGE,
+    domainType,
     parameters,
     loadDomain: () => Promise.resolve(domain),
     loadRange

@@ -1,8 +1,9 @@
 import ndarray from 'ndarray'
+import processPolygon from 'point-in-big-polygon'
 
 import {COVERAGE} from '../constants.js'
 import {checkCoverage} from '../validate.js'
-import {shallowcopy} from '../util.js'
+import {shallowcopy, ensureClockwisePolygon} from '../util.js'
 import {addLoadRangesFunction} from './create.js'
 
 /**
@@ -224,6 +225,59 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
       coordinates: [polygon.coordinates]
     }
   }
+  // prepare polygon coordinates for point-in-big-polygon algorithm
+  let polygons = polygon.coordinates//.map(poly => poly.map(loop => loop.slice(0, loop.length - 1)))
+  polygons.forEach(ensureClockwisePolygon)
+  
+  let classifiers = polygons.map(processPolygon)
+  let npolys = polygons.length
+  
+  let [X,Y] = axes
+  
+  return cov.loadDomain().then(domain => {
+    let x = domain.axes.get(X).values
+    let y = domain.axes.get(Y).values
+    let pnpolyCache = ndarray(new Uint8Array(x.length * y.length), [x.length, y.length])
+
+    for (let i=0; i < x.length; i++) {
+      for (let j=0; j < y.length; j++) {
+        let inside = false
+        for (let p=0; p < npolys; p++) {
+          if (classifiers[p]([x[i], y[j]]) === -1) {
+            inside = true
+            break
+          }
+        }
+        pnpolyCache.set(i, j, inside)
+      }
+    }
+    
+    let fn = (obj, range) => {
+      if (pnpolyCache.get(obj[X] || 0, obj[Y] || 0)) {
+        return range.get(obj)
+      } else {
+        return null
+      }
+    }
+
+    let newcov = cov
+    for (let key of cov.parameters.keys()) {
+      newcov = mapRange(newcov, key, fn)
+    }
+    return newcov
+  })
+}
+
+/*
+export function maskByPolygon (cov, polygon, axes=['x','y']) {
+  checkCoverage(cov)
+  
+  if (polygon.type === 'Polygon') {
+    polygon = {
+      type: 'MultiPolygon',
+      coordinates: [polygon.coordinates]
+    }
+  }
   // prepare polygon coordinates for pnpoly algorithm
   // each polygon component is surrounded by (0,0) vertices
   let nvert = 1 + polygon.coordinates
@@ -243,7 +297,7 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
     }
   }
   
-  let [X,Y] = [axes]
+  let [X,Y] = axes
   
   return cov.loadDomain().then(domain => {
     let x = domain.axes.get(X).values
@@ -272,6 +326,7 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
     return newcov
   })
 }
+*/
 
 /**
  * Returns whether a point is inside a polygon.
@@ -289,6 +344,7 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
  * @returns {boolean} true if point is inside or false if not
  */
 export function pnpoly (x, y, vertx, verty) {
+  // TODO deprecated, not needed anymore (faster: point-in-big-polygon library)
   let inside = false
   let nvert = vertx.length
   for (let i = 0, j = nvert - 1; i < nvert; j = i++) {

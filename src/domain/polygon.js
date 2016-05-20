@@ -24,7 +24,7 @@ export function ensureClockwisePolygon (rings, isCartesian=false) {
 /**
  * Preprocesses an array of polygons to answer the point-in-polygon question efficiently.
  * 
- * @param {Array} polygons - A list of polygons with exterior rings in clockwise and interior rings in anti-clockwise order.
+ * @param {Array} polygons - A list of polygons where the exterior ring of each polygon is in clockwise and the interior rings in anti-clockwise order.
  * @return {function} A function classify(point) which returns the index of the first found polygon containing point, or -1 if not in any polygon.
  */
 export function getPointInPolygonsFn (polygons) {

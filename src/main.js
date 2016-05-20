@@ -2,6 +2,7 @@ import * as array from './array.js'
 import * as constants from './constants.js'
 import * as i18n from './i18n.js'
 import * as range from './range.js'
+import * as parameter from './parameter.js'
 import * as validate from './validate.js'
 
 import * as referencing from './domain/referencing.js'
@@ -18,6 +19,7 @@ export default {
   i18n,
   validate,
   range,
+  parameter,
   domain: {
     referencing,
     subset: domainSubset,

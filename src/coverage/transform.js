@@ -3,7 +3,8 @@ import processPolygon from 'point-in-big-polygon'
 
 import {COVERAGE} from '../constants.js'
 import {checkCoverage} from '../validate.js'
-import {shallowcopy, ensureClockwisePolygon} from '../util.js'
+import {shallowcopy} from '../util.js'
+import {ensureClockwisePolygon, getPointInPolygonsFn} from '../domain/polygon.js'
 import {addLoadRangesFunction} from './create.js'
 
 /**
@@ -227,10 +228,9 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
   }
   // prepare polygon coordinates for point-in-big-polygon algorithm
   let polygons = polygon.coordinates//.map(poly => poly.map(loop => loop.slice(0, loop.length - 1)))
-  polygons.forEach(ensureClockwisePolygon)
+  polygons.forEach(p => ensureClockwisePolygon(p))
   
-  let classifiers = polygons.map(processPolygon)
-  let npolys = polygons.length
+  let pip = getPointInPolygonsFn(polygons)
   
   let [X,Y] = axes
   
@@ -241,16 +241,11 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
 
     for (let i=0; i < x.length; i++) {
       for (let j=0; j < y.length; j++) {
-        let inside = false
-        for (let p=0; p < npolys; p++) {
-          if (classifiers[p]([x[i], y[j]]) === -1) {
-            inside = true
-            break
-          }
-        }
+        let inside = pip([x[i], y[j]]) >= 0
         pnpolyCache.set(i, j, inside)
       }
     }
+    
     
     let fn = (obj, range) => {
       if (pnpolyCache.get(obj[X] || 0, obj[Y] || 0)) {

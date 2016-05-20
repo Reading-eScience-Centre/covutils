@@ -6,6 +6,7 @@ import * as validate from './validate.js'
 
 import * as referencing from './domain/referencing.js'
 import * as domainSubset from './domain/subset.js'
+import * as polygon from './domain/polygon.js'
 import * as covCreate from './coverage/create.js'
 import * as covReferencing from './coverage/referencing.js'
 import * as covSubset from './coverage/subset.js'
@@ -19,7 +20,8 @@ export default {
   range,
   domain: {
     referencing,
-    subset: domainSubset
+    subset: domainSubset,
+    polygon
   },
   coverage: {
     create: covCreate,

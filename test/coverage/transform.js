@@ -5,7 +5,7 @@ import triangulate from 'delaunay-triangulate'
 import dup from 'dup'
 import processPolygon from 'point-in-big-polygon'
 
-import {ensureClockwisePolygon} from '../../lib/util.js'
+import {ensureClockwisePolygon, getPointInPolygonsFn} from '../../lib/domain/polygon.js'
 import {fromDomain, fromXndarray} from '../../lib/coverage/create.js'
 import {withSimpleDerivedParameter, maskByPolygon, pnpoly} from '../../lib/coverage/transform.js'
 
@@ -90,20 +90,14 @@ describe("coverage/transform", () => {
     it("benchmark", () => {
       let t0 = new Date()
       let polys = triangles.map(triangle => [triangle.map(idx => points[idx])])
-      polys.forEach(ensureClockwisePolygon)
-      let classifiers = polys.map(processPolygon)
+      polys.forEach(p => ensureClockwisePolygon(p))
+      let pip = getPointInPolygonsFn(polys)
       console.log('point-in-big-polygon init: ' + (new Date()-t0) + 'ms')
       
       t0 = new Date()
       for (let i=0; i < points.length; i++) {
-        let onboundary = false
-        for (let j=0; j < polys.length; j++) {
-          if (classifiers[j](points[i]) === 0) {
-            onboundary = true
-            break
-          }
-        }
-        assert(onboundary)
+        let inside = pip(points[i]) >= 0
+        assert(inside)
       }      
       console.log('point-in-big-polygon: ' + (new Date()-t0) + 'ms')
     })

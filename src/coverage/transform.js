@@ -74,6 +74,9 @@ export function withCategories (cov, key, observedProperty, mapping) {
 }
 
 /**
+ * Returns a new coverage where the domainType field of the coverage and the domain
+ * is set to the given one.
+ * 
  * @param {Coverage} cov The Coverage object.
  * @param {String} domainType The new domain type.
  * @returns {Coverage}
@@ -102,6 +105,31 @@ export function withDomainType (cov, domainType) {
     subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => withDomainType(sub, domainType))
   }
   return newcov
+}
+
+/**
+ * Tries to transform the given Coverage object into a new one that
+ * conforms to one of the CovJSON domain types.
+ * If multiple domain types match, then the "smaller" one is preferred,
+ * for example, Point instead of Grid.
+ * 
+ * The transformation consists of:
+ * - Setting domainType in coverage and domain object
+ * - Renaming domain axes
+ * 
+ * @see https://github.com/Reading-eScience-Centre/coveragejson/blob/master/domain-types.md
+ *
+ * @param {Coverage} cov The Coverage object.
+ * @returns {Promise<Coverage>} 
+ *   A Promise succeeding with the transformed coverage,
+ *   or failing if no CovJSON domain type matched the input coverage.   
+ */
+export function asCovJSONDomainType (cov) {
+  return cov.loadDomain().then(domain => {
+    
+    // TODO implement me
+    
+  })
 }
 
 /**

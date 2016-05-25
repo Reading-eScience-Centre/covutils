@@ -79,15 +79,14 @@ export function reproject (cov, refDomain) {
     
     let newDomain = {
       type: DOMAIN,
-      profiles: sourceDomain.profiles,
+      domainType: sourceDomain.domainType,
       axes: newAxes,
       referencing: newReferencing
     }
     
     let newCoverage = {
       type: COVERAGE,
-      profiles: cov.profiles,
-      domainProfiles: cov.domainProfiles,
+      domainType: cov.domainType,
       parameters: cov.parameters,
       loadDomain: () => Promise.resolve(newDomain),
       loadRange: paramKey => cov.loadRange(paramKey),

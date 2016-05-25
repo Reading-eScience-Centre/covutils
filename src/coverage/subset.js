@@ -64,8 +64,6 @@ export function subsetByIndex (cov, constraints) {
     // assemble everything to a new coverage
     let newcov = {
       type: COVERAGE,
-      // TODO are the profiles still valid?
-      domainProfiles: cov.domainProfiles,
       domainType: cov.domainType,
       parameters: cov.parameters,
       loadDomain: () => Promise.resolve(newdomain),

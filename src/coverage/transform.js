@@ -1,5 +1,4 @@
 import ndarray from 'ndarray'
-import processPolygon from 'point-in-big-polygon'
 
 import {COVERAGE} from '../constants.js'
 import {checkCoverage} from '../validate.js'
@@ -16,8 +15,7 @@ import {addLoadRangesFunction} from './create.js'
 export function withParameters (cov, params) {
   let newcov = {
     type: COVERAGE,
-    profiles: cov.profiles,
-    domainProfiles: cov.domainProfiles,
+    domainType: cov.domainType,
     parameters: params,
     loadDomain: () => cov.loadDomain(),
     loadRange: key => cov.loadRange(key),
@@ -102,8 +100,7 @@ export function mapRange (cov, key, fn, dataType) {
   
   let newcov = {
     type: COVERAGE,
-    profiles: cov.profiles,
-    domainProfiles: cov.domainProfiles,
+    domainType: cov.domainType,
     parameters: cov.parameters,
     loadDomain: () => cov.loadDomain(),
     loadRange,
@@ -158,8 +155,7 @@ export function withDerivedParameter (cov, options) {
   
   let newcov = {
     type: COVERAGE,
-    profiles: cov.profiles,
-    domainProfiles: cov.domainProfiles,
+    domainType: cov.domainType,
     parameters,
     loadDomain: () => cov.loadDomain(),
     loadRange,

@@ -68,10 +68,7 @@ export class CollectionQuery {
       type: COVERAGECOLLECTION,
       coverages: [],
       parameters: coll.parameters,
-      // TODO is the domain template still valid in all cases after filtering and subsetting?
-      domainTemplate: coll.domainTemplate,
-      // TODO are the profiles still valid?
-      profiles: coll.profiles
+      domainType: coll.domainType
     }
     
     let promises = []

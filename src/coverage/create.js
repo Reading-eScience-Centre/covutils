@@ -73,8 +73,6 @@ export function fromDomain (domain, options={}) {
 
   let cov = {
     type: COVERAGE,
-    // TODO remove domainProfiles in favour of domainType at some point
-    domainProfiles: domain.profiles,
     domainType: domain.domainType,
     parameters,
     loadDomain: () => Promise.resolve(domain),

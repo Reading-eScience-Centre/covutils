@@ -1,6 +1,6 @@
 import ndarray from 'ndarray'
 
-import {COVERAGE} from '../constants.js'
+import {COVERAGE, DOMAIN} from '../constants.js'
 import {checkCoverage} from '../validate.js'
 import {shallowcopy} from '../util.js'
 import {ensureClockwisePolygon, getPointInPolygonsFn} from '../domain/polygon.js'
@@ -35,7 +35,7 @@ export function withParameters (cov, params) {
  * @param {String} key The key of the parameter to work with.
  * @param {object} observedProperty The new observed property including the new array of category objects
  *                           that will be part of the returned coverage.
- * @param {Map} mapping A mapping from source category id to destination category id.
+ * @param {Map<String,String>} mapping A mapping from source category id to destination category id.
  * @returns {Coverage}
  */
 export function withCategories (cov, key, observedProperty, mapping) {
@@ -70,6 +70,117 @@ export function withCategories (cov, key, observedProperty, mapping) {
   newparams.get(key).categoryEncoding = catEncoding
   
   let newcov = withParameters(cov, newparams)
+  return newcov
+}
+
+/**
+ * @param {Coverage} cov The Coverage object.
+ * @param {String} domainType The new domain type.
+ * @returns {Coverage}
+ */
+export function withDomainType (cov, domainType) {
+  checkCoverage(cov)
+  
+  let domainWrapper = domain => {
+    let newdomain = {
+      type: DOMAIN,
+      domainType,
+      axes: domain.axes,
+      referencing: domain.referencing
+    }
+    return newdomain
+  }
+  
+  let newcov = {
+    type: COVERAGE,
+    domainType,
+    parameters: cov.parameters,
+    loadDomain: () => cov.loadDomain().then(domainWrapper),
+    loadRange: key => cov.loadRange(key),
+    loadRanges: keys => cov.loadRanges(keys),
+    subsetByIndex: constraints => cov.subsetByIndex(constraints).then(sub => withDomainType(sub, domainType)),
+    subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => withDomainType(sub, domainType))
+  }
+  return newcov
+}
+
+/**
+ * @example
+ * var cov = ...
+ * var mapping = new Map()
+ * mapping.set('lat', 'y').set('lon', 'x')
+ * var newcov = renameAxes(cov, mapping)
+ * 
+ * @param {Coverage} cov The coverage.
+ * @param {Map<String,String>} mapping
+ * @returns {Coverage}
+ */
+export function renameAxes (cov, mapping) {
+  checkCoverage(cov)
+  mapping = new Map(mapping)
+  for (let axisName of cov.axes.keys()) {
+    if (!mapping.has(axisName)) {
+      mapping.set(axisName, axisName)
+    }
+  }
+  
+  let domainWrapper = domain => {
+    let newaxes = new Map()
+    for (let [from,to] of mapping) {
+      let {dataType, components, values, bounds} = domain.axes.get(from)
+      let newaxis = {
+        key: to,
+        dataType,
+        components: components.map(c => mapping.has(c) ? mapping.get(c) : c),
+        values,
+        bounds
+      }
+      newaxes.set(to, newaxis)
+    }
+    
+    let newreferencing = domain.referencing.map(({components, system}) => ({
+      components: components.map(c => mapping.has(c) ? mapping.get(c) : c),
+      system
+    }))
+    
+    let newdomain = {
+      type: DOMAIN,
+      domainType: domain.domainType,
+      axes: newaxes,
+      referencing: newreferencing
+    }
+    return newdomain
+  }
+
+  // pre-compile for efficiency
+  // get({['lat']: obj['y'], ['lon']: obj['x']})
+  let getObjStr = [...mapping].map(([from,to]) => `['${from}']:obj['${to}']`).join(',')
+    
+  let rangeWrapper = range => {
+    let newrange = {
+      shape: new Map([...range.shape].map(([name, len]) => [mapping.get(name), len])),
+      dataType: range.dataType,
+      get: new Function('range', 'return function get (obj){return range.get({' + getObjStr + '})}')(range)
+    }
+    return newrange
+  }
+  
+  let loadRange = paramKey => cov.loadRange(paramKey).then(rangeWrapper)
+  
+  let loadRanges = paramKeys => cov.loadRanges(paramKeys)
+    .then(ranges => new Map([...ranges].map(([paramKey, range]) => [paramKey, rangeWrapper(range)])))
+  
+  let newcov = {
+    type: COVERAGE,
+    domainType: cov.domainType,
+    parameters: cov.parameters,
+    loadDomain: () => cov.loadDomain().then(domainWrapper),
+    loadRange,
+    loadRanges,
+    subsetByIndex: constraints => cov.subsetByIndex(constraints).then(sub => renameAxes(sub, mapping)),
+    subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => renameAxes(sub, mapping))
+  }
+  
   return newcov
 }
 
@@ -241,8 +352,7 @@ export function maskByPolygon (cov, polygon, axes=['x','y']) {
         pnpolyCache.set(i, j, inside)
       }
     }
-    
-    
+        
     let fn = (obj, range) => {
       if (pnpolyCache.get(obj[X] || 0, obj[Y] || 0)) {
         return range.get(obj)

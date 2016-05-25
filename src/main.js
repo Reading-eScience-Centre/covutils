@@ -13,6 +13,8 @@ import * as covReferencing from './coverage/referencing.js'
 import * as covSubset from './coverage/subset.js'
 import * as covTransform from './coverage/transform.js'
 
+import * as collCreate from './collection/create.js'
+
 export default {
   array,
   constants,
@@ -30,5 +32,8 @@ export default {
     referencing: covReferencing,
     subset: covSubset,
     transform: covTransform
-  }  
+  },
+  collection: {
+    create: collCreate
+  }
 }

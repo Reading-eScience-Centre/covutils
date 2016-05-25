@@ -1,13 +1,9 @@
 import assert from 'assert'
 
 import xndarray from 'xndarray'
-import triangulate from 'delaunay-triangulate'
-import dup from 'dup'
-import processPolygon from 'point-in-big-polygon'
 
-import {ensureClockwisePolygon, getPointInPolygonsFn} from '../../lib/domain/polygon.js'
 import {fromDomain, fromXndarray} from '../../lib/coverage/create.js'
-import {withSimpleDerivedParameter, maskByPolygon, pnpoly} from '../../lib/coverage/transform.js'
+import {withSimpleDerivedParameter, maskByPolygon} from '../../lib/coverage/transform.js'
 
 describe("coverage/transform", () => {
   describe("#withSimpleDerivedParameter", () => {
@@ -51,58 +47,7 @@ describe("coverage/transform", () => {
       })
     })
   })
-  
-  let numPoints = 1000
-  let points = dup(numPoints).map(function() { return [Math.random(), Math.random()] })
-  let triangles = triangulate(points) // list of triangles (indices of points)
-  
-  describe('#pnpoly', () => {
-    it("benchmark", () => {
-      let t0 = new Date()
-      // map indices to points
-      // [ [ 0.1, 0.2, .. ], ... ]
-      let trianglesVertX = triangles.map(tri => tri.map(idx => points[idx][0]))
-      let trianglesVertY = triangles.map(tri => tri.map(idx => points[idx][1]))
-      
-      // flatten verts and surround each polygon with (0,0) points
-      let trianglesVertXFlat = trianglesVertX.reduce((a,b) => a.concat([0], b))
-      trianglesVertXFlat = [0].concat(trianglesVertXFlat, [0])
-      let trianglesVertYFlat = trianglesVertY.reduce((a,b) => a.concat([0], b))
-      trianglesVertYFlat = [0].concat(trianglesVertYFlat, [0])
-      console.log('pnpoly init: ' + (new Date()-t0) + 'ms')
-
-      let found = false
-      for (let i=0; i < points.length; i++) {
-        let [x,y] = points[i]
-        if (pnpoly(x, y, trianglesVertXFlat, trianglesVertYFlat)) {
-          found = true
-        }
-        // edge points may return false, so we can't check against the input points
-      }
-      // at least one point must be inside a polygon...
-      assert(found)
-      
-      console.log('pnpoly: ' + (new Date()-t0) + 'ms')
-    })
-  })
     
-  describe('#point-in-big-polygon', () => {
-    it("benchmark", () => {
-      let t0 = new Date()
-      let polys = triangles.map(triangle => [triangle.map(idx => points[idx])])
-      polys.forEach(p => ensureClockwisePolygon(p))
-      let pip = getPointInPolygonsFn(polys)
-      console.log('point-in-big-polygon init: ' + (new Date()-t0) + 'ms')
-      
-      t0 = new Date()
-      for (let i=0; i < points.length; i++) {
-        let inside = pip(points[i]) >= 0
-        assert(inside)
-      }      
-      console.log('point-in-big-polygon: ' + (new Date()-t0) + 'ms')
-    })
-  })
-  
   describe('#maskByPolygon', () => {
     it("should mask correctly", () => {
       var grid = xndarray(

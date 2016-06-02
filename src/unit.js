@@ -1,4 +1,4 @@
-import {getLanguageString} from '../util/i18n.js'
+import {getLanguageString} from './i18n.js'
 
 /**
  * Returns a unit as human-readable symbol or label, where symbols are preferred.
@@ -35,16 +35,16 @@ export function toAscii (unit, language) {
     return ''
   }
   if (unit.symbol) {
-    let unit = unit.symbol.value || unit.symbol
+    let symbol = unit.symbol.value || unit.symbol
     let scheme = unit.symbol.type
     if (scheme === 'http://www.opengis.net/def/uom/UCUM/') {
-      if (unit === 'Cel') {
-        unit = '°C'
+      if (symbol === 'Cel') {
+        symbol = '°C'
       } else if (unit === '1') {
-        unit = ''
+        symbol = ''
       }
     }
-    return unit
+    return symbol
   } else {
     return getLanguageString(unit.label, language)
   }

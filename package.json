@@ -1,6 +1,6 @@
 {
   "name": "covutils",
-  "version": "0.2.6",
+  "version": "0.3.0",
   "license": "BSD-3-Clause",
   "description": "Utilities for creating, transforming, and handling Coverage Data objects.",
   "repository": {
@@ -15,8 +15,10 @@
   },
   "main": "lib/main.js",
   "files": [
+    "src/",
     "lib/",
-    "covutils.*"
+    "covutils.*",
+    "covutils-lite.*"
   ],
   "dependencies": {
     "ndarray": "^1.0.18",
@@ -32,8 +34,11 @@
     "testkarma": "karma start --single-run",
     "karma": "karma start",
     "saucelabs": "karma start karma.conf-ci.js",
-    "browserdist": "browserify lib/main.js -s CovUtils -o covutils.src.js",
-    "postbrowserdist": "uglifyjs covutils.src.js -c unused=false -o covutils.min.js --source-map covutils.min.js.map",
+    "browserdist": "npm run browserdistlite && npm run browserdistfull",
+    "browserdistlite": "browserify lib/main-lite.js -s CovUtils -o covutils-lite.src.js",
+    "browserdistfull": "browserify lib/main.js -s CovUtils -o covutils.src.js",
+    "postbrowserdistlite": "uglifyjs covutils-lite.src.js -c unused=false -o covutils-lite.min.js --source-map covutils-lite.min.js.map",
+    "postbrowserdistfull": "uglifyjs covutils.src.js -c unused=false -o covutils.min.js --source-map covutils.min.js.map",
     "build": "npm run transpile && npm run browserdist",
     "prepublish": "npm run build"
   },

@@ -8,18 +8,12 @@ import * as validate from './validate.js'
 
 import * as referencing from './domain/referencing.js'
 import * as domainSubset from './domain/subset.js'
-import * as polygon from './domain/polygon.js'
 import * as covCreate from './coverage/create.js'
 import * as covReferencing from './coverage/referencing.js'
 import * as covSubset from './coverage/subset.js'
 import * as covTransform from './coverage/transform.js'
-import * as covTransformPolygon from './coverage/transform-polygon.js'
 
 import * as collCreate from './collection/create.js'
-
-for (let prop in covTransformPolygon) {
-  covTransform[prop] = covTransformPolygon[prop] 
-}
 
 export default {
   array,
@@ -31,8 +25,7 @@ export default {
   unit,
   domain: {
     referencing,
-    subset: domainSubset,
-    polygon
+    subset: domainSubset
   },
   coverage: {
     create: covCreate,

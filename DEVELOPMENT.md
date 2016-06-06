@@ -33,7 +33,7 @@ A stand-alone browser bundle that exposes the global `CovUtils` object can be cr
 ```
 $ npm run build
 ```
-This will build the covutils.{src|min}.js files in the root project folder.
+This will build the covutils[-lite].{src|min}.js files in the root project folder.
 
 ## Publishing a new version
 
@@ -42,7 +42,7 @@ This will build the covutils.{src|min}.js files in the root project folder.
 3. Create a semver git tag (`x.y.z`) and push it.
 4. Regenerate documentation at https://doc.esdoc.org.
 5. Run `npm publish`.
-6. Attach the `covutils.{src|min}.js` files to the GitHub release.
+6. Attach the `covutils[-lite].{src|min}.js` files to the GitHub release.
 
 The last two steps build and publish the package to the npm registry.
 This project is registered on http://www.jsdelivr.com such that on every new

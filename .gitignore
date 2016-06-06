@@ -1,11 +1,8 @@
 /.project
 /*.log
 /node_modules/
-/jspm_packages/
 /sauce.json
-/covutils.min.js
-/covutils.min.js.map
-/covutils.src.js
+/covutils*
 /docs/
 /.tern-project
 /lib

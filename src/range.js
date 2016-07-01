@@ -9,7 +9,7 @@
  * @return {[min,max]} The minimum and maximum values of the range,
  *   or [undefined, undefined] if the range contains only `null` values.
  */
-export function minMax (range) {
+export function minMaxOfRange (range) {
   let min = Infinity
   let max = -Infinity
   let fn = val => {
@@ -29,7 +29,7 @@ export function minMax (range) {
  * @param start Value to use as the first argument to the first call of the `callback`.
  * @return The reduced value.
  */
-export function reduce (range, callback, start) {
+export function reduceRange (range, callback, start) {
   let v1 = start
   let iterFn = v2 => {
     v1 = callback(v1, v2)
@@ -42,7 +42,7 @@ export function reduce (range, callback, start) {
  * Iterate over all range values and run a function for each value.
  * No particular iteration order must be assumed.
  */
-export function iterate (range, fn) {
+export function iterateRange (range, fn) {
   // We use a precompiled function here for efficiency.
   // See below for a slower recursive version.
 
@@ -67,7 +67,7 @@ export function iterate (range, fn) {
     fn(get(obj))
   `
   
-  let iterateLoop = new Function(`return function iterateRange (get, fn) { ${begin} ${end} }`)()
+  let iterateLoop = new Function(`return function iterRange (get, fn) { ${begin} ${end} }`)()
   iterateLoop(range.get, fn)
 }
 

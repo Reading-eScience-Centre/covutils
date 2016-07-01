@@ -43,7 +43,7 @@ export function normalizeIndexSubsetConstraints (domain, constraints) {
   return normalizedConstraints
 }
 
-export function subsetByIndex (domain, constraints) {
+export function subsetDomainByIndex (domain, constraints) {
   constraints = normalizeIndexSubsetConstraints(domain, constraints)
   
   // subset the axis arrays of the domain (immediately + cached)

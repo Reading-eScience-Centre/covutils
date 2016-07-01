@@ -1,7 +1,7 @@
 import {getLanguageString} from './i18n.js'
 
 /**
- * Returns a unit as human-readable symbol or label, where symbols are preferred.
+ * Converts a unit object to a human-readable symbol or label, where symbols are preferred.
  * 
  * @example
  * var unit = {
@@ -30,7 +30,7 @@ import {getLanguageString} from './i18n.js'
  * }
  * var str = toAscii(unit, 'en') // str == 'Degree Celsius'
  */
-export function toAscii (unit, language) {
+export function stringifyUnit (unit, language) {
   if (!unit) {
     return ''
   }

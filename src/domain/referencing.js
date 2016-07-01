@@ -161,7 +161,7 @@ export function getProjection (domain) {
 /**
  * Reprojects coordinates from one projection to another.
  */
-export function reproject (pos, fromProjection, toProjection) {
+export function reprojectCoords (pos, fromProjection, toProjection) {
   return toProjection.project(fromProjection.unproject(pos))
 }
 

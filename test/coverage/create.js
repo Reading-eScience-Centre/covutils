@@ -2,7 +2,7 @@ import assert from 'assert'
 
 import xndarray from 'xndarray'
 
-import {fromXndarray} from '../../lib/coverage/create.js'
+import {fromXndarray} from '../../src'
 
 describe("coverage/create", () => {  
   describe('#fromXndarray', () => {

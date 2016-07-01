@@ -5,7 +5,7 @@ import {asTime, isISODateAxis, isLongitudeAxis, getLongitudeWrapper} from '../do
  * Adds a basic query() function to the coverage collection object.
  * Note that this does not support paging.
  */
-export function addQueryFunction (collection) {
+export function addCollectionQueryFunction (collection) {
   if (collection.paging) {
     throw new Error('Paged collections not supported')
   }

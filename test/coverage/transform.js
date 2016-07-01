@@ -2,8 +2,8 @@ import assert from 'assert'
 
 import xndarray from 'xndarray'
 
-import {fromDomain, fromXndarray} from '../../lib/coverage/create.js'
-import {withSimpleDerivedParameter, maskByPolygon} from '../../lib/coverage/transform.js'
+import {fromDomain, fromXndarray} from '../../src'
+import {withSimpleDerivedParameter, maskByPolygon} from '../../src'
 
 describe("coverage/transform", () => {
   describe("#withSimpleDerivedParameter", () => {

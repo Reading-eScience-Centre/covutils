@@ -1,5 +1,5 @@
 import {isISODateAxis, isLongitudeAxis, getLongitudeWrapper, asTime} from '../domain/referencing.js'
-import {normalizeIndexSubsetConstraints, subsetByIndex as subsetDomainByIndex} from '../domain/subset.js'
+import {normalizeIndexSubsetConstraints, subsetDomainByIndex} from '../domain/subset.js'
 import {indexOfNearest, indicesOfNearest} from '../array.js'
 import {COVERAGE} from '../constants.js'
 

@@ -26,6 +26,10 @@
     "point-in-big-polygon": "^2.0.0",
     "topojson": "^1.6.26"
   },
+  "jspm": {
+    "registry": "npm",
+    "main": "src/index.js"
+  },
   "scripts": {
     "esdoc": "esdoc -c esdoc.json",
     "docs": "documentation build src/index.js -f html -o docs/",

@@ -12,7 +12,7 @@ A browser version of this library is available on [npmcdn](https://npmcdn.com/co
 
 Usage is simple:
 ```html
-<script src="https://npmcdn.com/covutils@0.3/covutils.min.js"></script>
+<script src="https://npmcdn.com/covutils@0.4/covutils.min.js"></script>
 <script>
 var coverage = ... ;
 
@@ -24,7 +24,7 @@ var polygon = {
     [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0] ]
     ]
 }
-CovUtils.coverage.transform.maskByPolygon(coverage, polygon, ['x','y'])
+CovUtils.maskByPolygon(coverage, polygon, ['x','y'])
   .then(function (maskedCov) {
     // work with masked Coverage
   })
@@ -33,7 +33,7 @@ CovUtils.coverage.transform.maskByPolygon(coverage, polygon, ['x','y'])
 
 If polygon-related functionality is not needed, then a lite browser version can be used instead:
 ```html
-<script src="https://npmcdn.com/covutils@0.3/covutils-lite.min.js"></script>
+<script src="https://npmcdn.com/covutils@0.4/covutils-lite.min.js"></script>
 ```
 
 ## Acknowledgments

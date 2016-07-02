@@ -1,14 +1,13 @@
 {
   "title": "covutils documentation",
   "source": "./src",
-  "destination": "./docs",
+  "destination": "./docs-esdoc",
   "plugins": [
     {
       "name": "esdoc-importpath-plugin",
       "option": {
         "replaces": [
-          {"from": "/src/main.js", "to": ""},
-          {"from": "^src/", "to": "lib/"}
+          {"from": ".*", "to": ""}
         ]
       }
     }

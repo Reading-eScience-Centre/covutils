@@ -27,7 +27,8 @@
     "topojson": "^1.6.26"
   },
   "scripts": {
-    "docs": "esdoc -c esdoc.json",
+    "esdoc": "esdoc -c esdoc.json",
+    "docs": "documentation build src/index.js -f html -o docs/",
     "style": "standard",
     "transpile": "babel -d lib/ src/",
     "test": "npm run testnode && npm run testkarma",
@@ -61,6 +62,7 @@
     "covjson-reader": "^0.12.1",
     "esdoc": "^0.4.1",
     "esdoc-importpath-plugin": "0.0.1",
+    "documentation": "^4.0.0-beta5",
     "finalhandler": "^0.4.1",
     "karma": "^0.13.9",
     "karma-browserify": "^4.4.2",

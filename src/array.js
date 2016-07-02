@@ -30,11 +30,11 @@ export function minMax (arr) {
  * 
  * @example
  * var a = [2,5,8,12,13]
- * var i = indicesOfNearest(a, 6)
+ * var i = CovUtils.indicesOfNearest(a, 6)
  * // i == [1,2]
- * var j = indicesOfNearest(a, 5)
+ * var j = CovUtils.indicesOfNearest(a, 5)
  * // j == [1,1]
- * var k = indicesOfNearest(a, 50)
+ * var k = CovUtils.indicesOfNearest(a, 50)
  * // k == [4,4] 
  * 
  * @param {Array<number>} a The array to search through. Must be sorted, ascending or descending.
@@ -82,11 +82,11 @@ export function indicesOfNearest (a, x) {
  * 
  * @example
  * var a = [2,5,8,12,13]
- * var i = indexOfNearest(a, 6)
+ * var i = CovUtils.indexOfNearest(a, 6)
  * // i == 1
- * var j = indexOfNearest(a, 7)
+ * var j = CovUtils.indexOfNearest(a, 7)
  * // j == 2
- * var k = indexOfNearest(a, 50)
+ * var k = CovUtils.indexOfNearest(a, 50)
  * // k == 4
  * 
  * @param {Array<number>} a The array to search through. Must be sorted, ascending or descending.

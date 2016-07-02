@@ -98,7 +98,7 @@ export function fromDomain (domain, options={}) {
  *     t: [new Date('2001-01-01')]
  *   }
  * })
- * var cov = fromXndarray(arr, {
+ * var cov = CovUtils.fromXndarray(arr, {
  *   parameter: {
  *     key: 'temperature',
  *     observedProperty: {

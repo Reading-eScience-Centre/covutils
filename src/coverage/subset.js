@@ -25,7 +25,7 @@ export function subsetByBbox (cov, bbox, axes=['x','y']) {
  * var cov = {
  *   type: 'Coverage',
  *   ...
- *   subsetByIndex: constraints => subsetCoverageByIndex(cov, constraints)
+ *   subsetByIndex: constraints => CovUtils.subsetByIndex(cov, constraints)
  * }
  */
 export function subsetByIndex (cov, constraints) {
@@ -84,7 +84,7 @@ export function subsetByIndex (cov, constraints) {
  * var cov = {
  *   type: 'Coverage',
  *   ...
- *   subsetByValue: constraints => subsetByValue(cov, constraints)
+ *   subsetByValue: constraints => CovUtils.subsetByValue(cov, constraints)
  * }
  */
 export function subsetByValue (cov, constraints) {

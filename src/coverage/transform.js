@@ -134,7 +134,7 @@ export function asCovJSONDomainType (cov) {
  * var cov = ...
  * var mapping = new Map()
  * mapping.set('lat', 'y').set('lon', 'x')
- * var newcov = renameAxes(cov, mapping)
+ * var newcov = CovUtils.renameAxes(cov, mapping)
  * 
  * @param {Coverage} cov The coverage.
  * @param {Map<String,String>} mapping
@@ -252,7 +252,7 @@ export function mapRange (cov, key, fn, dataType) {
  * 
  * @example
  * var cov = ... // has parameters 'NIR', 'red', 'green', 'blue'
- * var newcov = withDerivedParameter(cov, {
+ * var newcov = CovUtils.withDerivedParameter(cov, {
  *   parameter: {
  *     key: 'NDVI',
  *     observedProperty: {
@@ -307,7 +307,7 @@ export function withDerivedParameter (cov, options) {
  * 
  * @example
  * var cov = ... // has parameters 'NIR', 'red', 'green', 'blue'
- * var newcov = withSimpleDerivedParameter(cov, {
+ * var newcov = CovUtils.withSimpleDerivedParameter(cov, {
  *   parameter: {
  *     key: 'NDVI',
  *     observedProperty: {

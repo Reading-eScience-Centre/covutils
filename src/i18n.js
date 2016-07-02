@@ -3,7 +3,7 @@ const DEFAULT_LANGUAGE = 'en'
 /**
  * @example
  * var labels = {'en': 'Temperature', 'de': 'Temperatur'}
- * var tag = getLanguageTag(labels, 'en-GB')
+ * var tag = CovUtils.getLanguageTag(labels, 'en-GB')
  * // tag == 'en'
  * 
  * @param {object} map An object that maps language tags to strings.
@@ -30,7 +30,7 @@ export function getLanguageTag (map, preferredLanguage=DEFAULT_LANGUAGE) {
 /**
  * @example
  * var labels = {'en': 'Temperature', 'de': 'Temperatur'}
- * var label = getLanguageString(labels, 'en-GB')
+ * var label = CovUtils.getLanguageString(labels, 'en-GB')
  * // label == 'Temperature'
  * 
  * @param {object} map An object that maps language tags to strings.

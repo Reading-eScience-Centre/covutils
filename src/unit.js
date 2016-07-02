@@ -7,7 +7,7 @@ import {getLanguageString} from './i18n.js'
  * var unit = {
  *   symbol: '°C'
  * }
- * var str = toAscii(unit) // str == '°C'
+ * var str = CovUtils.stringifyUnit(unit) // str == '°C'
  * 
  * @example
  * var unit = {
@@ -19,7 +19,7 @@ import {getLanguageString} from './i18n.js'
  *     en: 'Degree Celsius'
  *   }
  * }
- * var str = toAscii(unit) // str == '°C'
+ * var str = CovUtils.stringifyUnit(unit) // str == '°C'
  * 
  * @example
  * var unit = {
@@ -28,7 +28,7 @@ import {getLanguageString} from './i18n.js'
  *     de: 'Grad Celsius'
  *   }
  * }
- * var str = toAscii(unit, 'en') // str == 'Degree Celsius'
+ * var str = CovUtils.stringifyUnit(unit, 'en') // str == 'Degree Celsius'
  */
 export function stringifyUnit (unit, language) {
   if (!unit) {

@@ -8,7 +8,7 @@ export default options => {
   return {
     entry: 'src/index' + lite + '.js',
     plugins: [
-      babel({ exclude: 'node_modules/**' }),
+      babel({ babelrc: false, presets: ['es2015-rollup'], exclude: 'node_modules/**' }),
       nodeResolve({ jsnext: true, browser: true }),
       commonjs({ include: 'node_modules/**' })
     ].concat(options.minify ? [uglify()] : []),

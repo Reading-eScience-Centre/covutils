@@ -1,8 +1,8 @@
 /**
  * Shallow clone a given object.
- * 
+ *
  * Note: This does *not* handle all kinds of objects!
- * 
+ *
  * @ignore
  */
 export function shallowcopy (obj) {
@@ -13,7 +13,7 @@ export function shallowcopy (obj) {
     copy = Object.create(Object.getPrototypeOf(obj))
     for (let prop in obj) {
       copy[prop] = obj[prop]
-    } 
+    }
   }
   return copy
 }

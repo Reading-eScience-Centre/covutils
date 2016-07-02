@@ -1,4 +1,4 @@
-import {COVJSON_DATATYPE_TUPLE, COVJSON_DATATYPE_POLYGON} from '../constants.js'
+import { COVJSON_DATATYPE_TUPLE, COVJSON_DATATYPE_POLYGON } from '../constants.js'
 
 const OPENGIS_CRS_PREFIX = 'http://www.opengis.net/def/crs/'
 
@@ -10,11 +10,11 @@ const EPSG4326 = OPENGIS_CRS_PREFIX + 'EPSG/0/4326'
 
 /** 2D WGS84 in lon-lat order */
 const CRS84 = OPENGIS_CRS_PREFIX + 'OGC/1.3/CRS84'
-  
+
 /** CRSs in which position is specified by geodetic latitude and longitude */
 const EllipsoidalCRSs = [EPSG4979, EPSG4326, CRS84]
 
-/** Position of longitude axis */ 
+/** Position of longitude axis */
 const LongitudeAxisIndex = {
   [EPSG4979]: 1,
   [EPSG4326]: 1,
@@ -37,8 +37,8 @@ export function getReferenceObject (domain, component) {
  * or projected and has exactly two axes.
  */
 export function getHorizontalCRSReferenceObject (domain) {
-  let isHorizontal = ref => 
-    ['GeodeticCRS', 'ProjectedCRS'].indexOf(ref.system.type) !== -1 && 
+  let isHorizontal = ref =>
+    ['GeodeticCRS', 'ProjectedCRS'].indexOf(ref.system.type) !== -1 &&
     ref.components.length === 2
   let ref = domain.referencing.find(isHorizontal)
   return ref
@@ -57,17 +57,17 @@ export function isEllipsoidalCRS (rs) {
 /**
  * Return a projection object based on the CRS found in the coverage domain.
  * If no CRS is found or it is unsupported, then ``undefined`` is returned.
- * 
+ *
  * A projection converts between geodetic lat/lon and projected x/y values.
- * 
+ *
  * For lat/lon CRSs the projection is defined such that an input lat/lon
  * position gets projected/wrapped to the longitude range used in the domain, for example
  * [0,360]. The purpose of this is to make intercomparison between different coverages easier.
- * 
+ *
  * The following limitations currently apply:
  * - only ellipsoidal CRSs are supported (lat/lon)
- * - only primitive axes and Tuple/Polygon composite axes are supported 
- * 
+ * - only primitive axes and Tuple/Polygon composite axes are supported
+ *
  * @param {Domain} domain A coverage domain object.
  * @return {IProjection} A stripped-down leaflet IProjection object.
  */
@@ -77,15 +77,15 @@ export function getProjection (domain) {
     // either no CRS found or not ellipsoidal
     return
   }
-  
-  let lonIdx = LongitudeAxisIndex[ref.system.id]  
+
+  let lonIdx = LongitudeAxisIndex[ref.system.id]
   if (lonIdx > 1) {
     // this should never happen as longitude is always the first or second axis
-    throw new Error
+    throw new Error()
   }
-  
+
   let lonComponent = ref.components[lonIdx]
-  
+
   // we find the min and max longitude occuring in the domain by inspecting the axis values
   // Note: this is inefficient for big composite axes.
   //       In that case, something like a domain extent might help which has the min/max values for each component.
@@ -96,20 +96,20 @@ export function getProjection (domain) {
     let lonAxisName = lonComponent
     let lonAxisVals = domain.axes.get(lonAxisName).values
     lonMin = lonAxisVals[0]
-    lonMax = lonAxisVals[lonAxisVals.length-1]
+    lonMax = lonAxisVals[lonAxisVals.length - 1]
     if (lonMin > lonMax) {
-      [lonMin,lonMax] = [lonMax,lonMin]
+      [lonMin, lonMax] = [lonMax, lonMin]
     }
   } else {
     // TODO there should be no dependency to CovJSON
-    
+
     // longitude is not a primitive grid axis but a component of a composite axis
-    
+
     // find the composite axis containing the longitude component
     let axes = [...domain.axes.values()]
     let axis = axes.find(axis => axis.components.indexOf(lonComponent) !== -1)
     let lonCompIdx = axis.components.indexOf(lonComponent)
-    
+
     // scan the composite axis for min/max longitude values
     lonMin = Infinity
     lonMax = -Infinity
@@ -118,7 +118,7 @@ export function getProjection (domain) {
         let lon = tuple[lonCompIdx]
         lonMin = Math.min(lon, lonMin)
         lonMax = Math.max(lon, lonMax)
-      }      
+      }
     } else if (axis.dataType === COVJSON_DATATYPE_POLYGON) {
       for (let poly of axis.values) {
         for (let ring of poly) {
@@ -133,13 +133,13 @@ export function getProjection (domain) {
       throw new Error('Unsupported data type: ' + axis.dataType)
     }
   }
-  
+
   let lonMid = (lonMax + lonMin) / 2
   let lonMinExtended = lonMid - 180
   let lonMaxExtended = lonMid + 180
-  
+
   return {
-    project: ({lon,lat}) => {
+    project: ({lon, lat}) => {
       let lonProjected
       if (lonMinExtended <= lon && lon <= lonMaxExtended) {
         // use unchanged to avoid introducing rounding errors
@@ -147,13 +147,13 @@ export function getProjection (domain) {
       } else {
         lonProjected = ((lon - lonMinExtended) % 360 + 360) % 360 + lonMinExtended
       }
-      
-      let [x,y] = lonIdx === 0 ? [lonProjected, lat] : [lat, lonProjected]
+
+      let [x, y] = lonIdx === 0 ? [lonProjected, lat] : [lat, lonProjected]
       return {x, y}
     },
-    unproject: ({x,y}) => {
-      let [lon,lat] = lonIdx === 0 ? [x,y] : [y,x]
-      return {lon,lat}
+    unproject: ({x, y}) => {
+      let [lon, lat] = lonIdx === 0 ? [x, y] : [y, x]
+      return {lon, lat}
     }
   }
 }
@@ -170,38 +170,38 @@ export function reprojectCoords (pos, fromProjection, toProjection) {
  * longitude extent used in the coverage domain.
  * This only supports primitive axes since this is what subsetByValue supports.
  * The longitude extent is extended to 360 degrees if the actual extent is smaller.
- * The extension is done equally on both sides of the extent. 
- * 
+ * The extension is done equally on both sides of the extent.
+ *
  * For example, the domain may have longitudes within [0,360].
  * An input longitude of -70 is converted to 290.
  * All longitudes within [0,360] are returned unchanged.
- * 
+ *
  * If the domain has longitudes within [10,50] then the
  * extended longitude range is [-150,210] (-+180 from the middle point).
  * An input longitude of -170 is converted to 190.
  * All longitudes within [-150,210] are returned unchanged.
- * 
+ *
  * @ignore
  */
 export function getLongitudeWrapper (domain, axisName) {
- // TODO deprecate this in favour of getProjection, check leaflet-coverage
-  
+  // TODO deprecate this in favour of getProjection, check leaflet-coverage
+
   // for primitive axes, the axis identifier = component identifier
   if (!isLongitudeAxis(domain, axisName)) {
     throw new Error(`'${axisName}' is not a longitude axis`)
   }
-    
+
   let vals = domain.axes.get(axisName).values
   let lon_min = vals[0]
-  let lon_max = vals[vals.length-1]
+  let lon_max = vals[vals.length - 1]
   if (lon_min > lon_max) {
-    [lon_min,lon_max] = [lon_max,lon_min]
+    [lon_min, lon_max] = [lon_max, lon_min]
   }
-  
+
   let x_mid = (lon_max + lon_min) / 2
   let x_min = x_mid - 180
   let x_max = x_mid + 180
-  
+
   return lon => {
     if (x_min <= lon && lon <= x_max) {
       // directly return to avoid introducing rounding errors
@@ -214,7 +214,7 @@ export function getLongitudeWrapper (domain, axisName) {
 
 /**
  * Return whether the given domain axis represents longitudes.
- * 
+ *
  * @ignore
  */
 export function isLongitudeAxis (domain, axisName) {
@@ -222,14 +222,14 @@ export function isLongitudeAxis (domain, axisName) {
   if (!ref) {
     return false
   }
-  
+
   let crsId = ref.system.id
   // TODO should support unknown CRSs with embedded axis information
   if (EllipsoidalCRSs.indexOf(crsId) === -1) {
     // this also covers the case when there is no ID property
     return false
   }
-  
+
   let compIdx = ref.components.indexOf(axisName)
   let isLongitude = LongitudeAxisIndex[crsId] === compIdx
   return isLongitude

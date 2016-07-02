@@ -1,12 +1,12 @@
-import {COVERAGE, DOMAIN} from '../constants.js'
-import {checkCoverage} from '../validate.js'
-import {shallowcopy} from '../util.js'
-import {addLoadRangesFunction} from './create.js'
+import { COVERAGE, DOMAIN } from '../constants.js'
+import { checkCoverage } from '../validate.js'
+import { shallowcopy } from '../util.js'
+import { addLoadRangesFunction } from './create.js'
 
 /**
  * Returns a copy of the given Coverage object with the parameters
  * replaced by the supplied ones.
- * 
+ *
  * Note that this is a low-level function and no checks are done on the supplied parameters.
  */
 export function withParameters (cov, params) {
@@ -24,10 +24,10 @@ export function withParameters (cov, params) {
 }
 
 /**
- * Returns a copy of the given Coverage object with the categories 
+ * Returns a copy of the given Coverage object with the categories
  * of a given parameter replaced by the supplied ones and the encoding
  * adapted to the given mapping from old to new.
- * 
+ *
  * @param {Coverage} cov The Coverage object.
  * @param {String} key The key of the parameter to work with.
  * @param {object} observedProperty The new observed property including the new array of category objects
@@ -49,7 +49,7 @@ export function withCategories (cov, key, observedProperty, mapping) {
   let newparam = shallowcopy(newparams.get(key))
   newparams.set(key, newparam)
   newparams.get(key).observedProperty = observedProperty
-  
+
   let fromCatEnc = cov.parameters.get(key).categoryEncoding
   let catEncoding = new Map()
   let categories = observedProperty.categories
@@ -65,7 +65,7 @@ export function withCategories (cov, key, observedProperty, mapping) {
     }
   }
   newparams.get(key).categoryEncoding = catEncoding
-  
+
   let newcov = withParameters(cov, newparams)
   return newcov
 }
@@ -73,14 +73,14 @@ export function withCategories (cov, key, observedProperty, mapping) {
 /**
  * Returns a new coverage where the domainType field of the coverage and the domain
  * is set to the given one.
- * 
+ *
  * @param {Coverage} cov The Coverage object.
  * @param {String} domainType The new domain type.
  * @returns {Coverage}
  */
 export function withDomainType (cov, domainType) {
   checkCoverage(cov)
-  
+
   let domainWrapper = domain => {
     let newdomain = {
       type: DOMAIN,
@@ -90,7 +90,7 @@ export function withDomainType (cov, domainType) {
     }
     return newdomain
   }
-  
+
   let newcov = {
     type: COVERAGE,
     domainType,
@@ -109,23 +109,23 @@ export function withDomainType (cov, domainType) {
  * conforms to one of the CovJSON domain types.
  * If multiple domain types match, then the "smaller" one is preferred,
  * for example, Point instead of Grid.
- * 
+ *
  * The transformation consists of:
  * - Setting domainType in coverage and domain object
  * - Renaming domain axes
- * 
+ *
  * @see https://github.com/Reading-eScience-Centre/coveragejson/blob/master/domain-types.md
  *
  * @param {Coverage} cov The Coverage object.
- * @returns {Promise<Coverage>} 
+ * @returns {Promise<Coverage>}
  *   A Promise succeeding with the transformed coverage,
- *   or failing if no CovJSON domain type matched the input coverage.   
+ *   or failing if no CovJSON domain type matched the input coverage.
  */
 export function asCovJSONDomainType (cov) {
   return cov.loadDomain().then(domain => {
-    
+
     // TODO implement me
-    
+
   })
 }
 
@@ -135,7 +135,7 @@ export function asCovJSONDomainType (cov) {
  * var mapping = new Map()
  * mapping.set('lat', 'y').set('lon', 'x')
  * var newcov = CovUtils.renameAxes(cov, mapping)
- * 
+ *
  * @param {Coverage} cov The coverage.
  * @param {Map<String,String>} mapping
  * @returns {Coverage}
@@ -148,10 +148,10 @@ export function renameAxes (cov, mapping) {
       mapping.set(axisName, axisName)
     }
   }
-  
+
   let domainWrapper = domain => {
     let newaxes = new Map()
-    for (let [from,to] of mapping) {
+    for (let [from, to] of mapping) {
       let {dataType, components, values, bounds} = domain.axes.get(from)
       let newaxis = {
         key: to,
@@ -162,12 +162,12 @@ export function renameAxes (cov, mapping) {
       }
       newaxes.set(to, newaxis)
     }
-    
+
     let newreferencing = domain.referencing.map(({components, system}) => ({
       components: components.map(c => mapping.has(c) ? mapping.get(c) : c),
       system
     }))
-    
+
     let newdomain = {
       type: DOMAIN,
       domainType: domain.domainType,
@@ -179,22 +179,23 @@ export function renameAxes (cov, mapping) {
 
   // pre-compile for efficiency
   // get({['lat']: obj['y'], ['lon']: obj['x']})
-  let getObjStr = [...mapping].map(([from,to]) => `['${from}']:obj['${to}']`).join(',')
-    
+  let getObjStr = [...mapping].map(([from, to]) => `['${from}']:obj['${to}']`).join(',')
+
   let rangeWrapper = range => {
+    let get = new Function('range', 'return function get (obj){return range.get({' + getObjStr + '})}')(range) // eslint-disable-line
     let newrange = {
       shape: new Map([...range.shape].map(([name, len]) => [mapping.get(name), len])),
       dataType: range.dataType,
-      get: new Function('range', 'return function get (obj){return range.get({' + getObjStr + '})}')(range)
+      get
     }
     return newrange
   }
-  
+
   let loadRange = paramKey => cov.loadRange(paramKey).then(rangeWrapper)
-  
+
   let loadRanges = paramKeys => cov.loadRanges(paramKeys)
     .then(ranges => new Map([...ranges].map(([paramKey, range]) => [paramKey, rangeWrapper(range)])))
-  
+
   let newcov = {
     type: COVERAGE,
     domainType: cov.domainType,
@@ -205,7 +206,7 @@ export function renameAxes (cov, mapping) {
     subsetByIndex: constraints => cov.subsetByIndex(constraints).then(sub => renameAxes(sub, mapping)),
     subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => renameAxes(sub, mapping))
   }
-  
+
   return newcov
 }
 
@@ -219,7 +220,7 @@ export function renameAxes (cov, mapping) {
  */
 export function mapRange (cov, key, fn, dataType) {
   checkCoverage(cov)
-  
+
   let rangeWrapper = range => {
     let newrange = {
       shape: range.shape,
@@ -228,12 +229,12 @@ export function mapRange (cov, key, fn, dataType) {
     }
     return newrange
   }
-  
+
   let loadRange = paramKey => key === paramKey ? cov.loadRange(paramKey).then(rangeWrapper) : cov.loadRange(paramKey)
-  
+
   let loadRanges = paramKeys => cov.loadRanges(paramKeys)
     .then(ranges => new Map([...ranges].map(([paramKey, range]) => [paramKey, key === paramKey ? rangeWrapper(range) : range])))
-  
+
   let newcov = {
     type: COVERAGE,
     domainType: cov.domainType,
@@ -244,12 +245,12 @@ export function mapRange (cov, key, fn, dataType) {
     subsetByIndex: constraints => cov.subsetByIndex(constraints).then(sub => mapRange(sub, key, fn, dataType)),
     subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => mapRange(sub, key, fn, dataType))
   }
-  
+
   return newcov
 }
 
 /**
- * 
+ *
  * @example
  * var cov = ... // has parameters 'NIR', 'red', 'green', 'blue'
  * var newcov = CovUtils.withDerivedParameter(cov, {
@@ -271,11 +272,11 @@ export function mapRange (cov, key, fn, dataType) {
  */
 export function withDerivedParameter (cov, options) {
   checkCoverage(cov)
-  let {parameter, inputParameters, dataType='float', fn} = options
-  
+  let {parameter, inputParameters, dataType = 'float', fn} = options
+
   let parameters = new Map(cov.parameters)
   parameters.set(parameter.key, parameter)
-  
+
   let loadDerivedRange = () => cov.loadRanges(inputParameters).then(inputRanges => {
     let inputRangesArr = inputParameters.map(key => inputRanges.get(key))
     let shape = inputRangesArr[0].shape
@@ -286,9 +287,9 @@ export function withDerivedParameter (cov, options) {
     }
     return range
   })
-  
+
   let loadRange = paramKey => parameter.key === paramKey ? loadDerivedRange() : cov.loadRange(paramKey)
-  
+
   let newcov = {
     type: COVERAGE,
     domainType: cov.domainType,
@@ -299,12 +300,12 @@ export function withDerivedParameter (cov, options) {
     subsetByValue: constraints => cov.subsetByValue(constraints).then(sub => withDerivedParameter(sub, options))
   }
   addLoadRangesFunction(newcov)
-    
+
   return newcov
 }
 
 /**
- * 
+ *
  * @example
  * var cov = ... // has parameters 'NIR', 'red', 'green', 'blue'
  * var newcov = CovUtils.withSimpleDerivedParameter(cov, {
@@ -329,7 +330,7 @@ export function withSimpleDerivedParameter (cov, options) {
     dataType,
     // TODO pre-compile if too slow
     fn: (obj, ...ranges) => {
-      let vals = inputParameters.map((_,i) => ranges[i].get(obj))
+      let vals = inputParameters.map((_, i) => ranges[i].get(obj))
       if (vals.some(val => val === null)) {
         return null
       }

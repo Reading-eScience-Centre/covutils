@@ -1,6 +1,6 @@
 {
   "name": "covutils",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "license": "BSD-3-Clause",
   "description": "Utilities for creating, transforming, and handling Coverage Data objects.",
   "repository": {
@@ -33,9 +33,8 @@
   "scripts": {
     "esdoc": "esdoc -c esdoc.json",
     "docs": "documentation build src/index.js -f html -o docs/",
-    "style": "standard",
     "transpile": "babel -d lib/ src/",
-    "test": "npm run testnode && npm run testkarma",
+    "test": "standard && npm run testnode && npm run testkarma",
     "testnode": "mocha --recursive --compilers js:babel-register",
     "testkarma": "karma start --single-run",
     "karma": "karma start",

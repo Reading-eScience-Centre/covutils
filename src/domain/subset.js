@@ -1,4 +1,4 @@
-import {DOMAIN} from '../constants.js'
+import { DOMAIN } from '../constants.js'
 
 /**
  * After normalization, all constraints are start,stop,step objects.
@@ -23,9 +23,7 @@ export function normalizeIndexSubsetConstraints (domain, constraints) {
       normalizedConstraints[axisName] = constraints[axisName]
     }
 
-    let {start = 0, 
-         stop = domain.axes.get(axisName).values.length, 
-         step = 1} = normalizedConstraints[axisName]
+    let { start = 0, stop = domain.axes.get(axisName).values.length, step = 1 } = normalizedConstraints[axisName]
     if (step <= 0) {
       throw new Error(`Invalid constraint for ${axisName}: step=${step} must be > 0`)
     }
@@ -45,7 +43,7 @@ export function normalizeIndexSubsetConstraints (domain, constraints) {
 
 export function subsetDomainByIndex (domain, constraints) {
   constraints = normalizeIndexSubsetConstraints(domain, constraints)
-  
+
   // subset the axis arrays of the domain (immediately + cached)
   let newdomain = {
     type: DOMAIN,
@@ -72,7 +70,7 @@ export function subsetDomainByIndex (domain, constraints) {
         newcoords = coords.subarray(start, stop)
       } else {
         newcoords = coords.slice(start, stop)
-      }      
+      }
       if (bounds) {
         newbounds = {
           get: i => bounds.get(start + i)
@@ -83,16 +81,16 @@ export function subsetDomainByIndex (domain, constraints) {
       let r = (stop - start) % step
       let len = q + r
       newcoords = new coords.constructor(len) // array or typed array
-      for (let i=start, j=0; i < stop; i += step, j++) {
+      for (let i = start, j = 0; i < stop; i += step, j++) {
         newcoords[j] = coords[i]
       }
       if (bounds) {
         newbounds = {
-          get: i => bounds.get(start + i*step)
+          get: i => bounds.get(start + i * step)
         }
       }
     }
-    
+
     let newaxis = {
       dataType: axis.dataType,
       components: axis.components,
@@ -101,6 +99,6 @@ export function subsetDomainByIndex (domain, constraints) {
     }
     newdomain.axes.set(axisName, newaxis)
   }
-  
+
   return newdomain
 }

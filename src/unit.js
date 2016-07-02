@@ -1,14 +1,14 @@
-import {getLanguageString} from './i18n.js'
+import { getLanguageString } from './i18n.js'
 
 /**
  * Converts a unit object to a human-readable symbol or label, where symbols are preferred.
- * 
+ *
  * @example
  * var unit = {
  *   symbol: '°C'
  * }
  * var str = CovUtils.stringifyUnit(unit) // str == '°C'
- * 
+ *
  * @example
  * var unit = {
  *   symbol: {
@@ -20,7 +20,7 @@ import {getLanguageString} from './i18n.js'
  *   }
  * }
  * var str = CovUtils.stringifyUnit(unit) // str == '°C'
- * 
+ *
  * @example
  * var unit = {
  *   label: {

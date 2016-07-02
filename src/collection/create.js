@@ -1,5 +1,5 @@
-import {COVERAGECOLLECTION} from '../constants.js'
-import {asTime, isISODateAxis, isLongitudeAxis, getLongitudeWrapper} from '../domain/referencing.js'
+import { COVERAGECOLLECTION } from '../constants.js'
+import { asTime, isISODateAxis, isLongitudeAxis, getLongitudeWrapper } from '../domain/referencing.js'
 
 /**
  * Adds a basic query() function to the coverage collection object.
@@ -21,13 +21,13 @@ export class CollectionQuery {
     this._filter = {}
     this._subset = {}
   }
-  
+
   /**
    * Matching mode: intersect
-   * 
+   *
    * Supports ISO8601 date string axes.
    * All other string-type axes are compared alphabetically.
-   * 
+   *
    * @example
    * collection.query().filter({
    *   't': {start: '2015-01-01T01:00:00', stop: '2015-01-01T02:00:00'}
@@ -41,13 +41,13 @@ export class CollectionQuery {
     mergeInto(spec, this._filter)
     return this
   }
-  
+
   /**
    * Subset coverages by domain values.
-   * 
+   *
    * Equivalent to calling {@link Coverage.subsetByValue}(spec) on each
    * coverage in the collection.
-   * 
+   *
    * @param {Object} spec
    * @return {CollectionQuery}
    */
@@ -55,11 +55,11 @@ export class CollectionQuery {
     mergeInto(spec, this._subset)
     return this
   }
-  
+
   /**
    * Applies the query operators and returns
    * a Promise that succeeds with a new CoverageCollection.
-   * 
+   *
    * @return {Promise<CoverageCollection>}
    */
   execute () {
@@ -70,14 +70,14 @@ export class CollectionQuery {
       parameters: coll.parameters,
       domainType: coll.domainType
     }
-    
+
     let promises = []
     for (let cov of coll.coverages) {
       promises.push(cov.loadDomain().then(domain => {
         if (!matchesFilter(domain, this._filter)) {
           return
         }
-        
+
         if (Object.keys(this._subset).length === 0) {
           newcoll.coverages.push(cov)
         } else {
@@ -102,30 +102,30 @@ function matchesFilter (domain, filter) {
     }
     let axis = domain.axes.get(axisName)
     let vals = axis.values
-    
-    let [min,max] = [vals[0],vals[vals.length-1]]
+
+    let [min, max] = [vals[0], vals[vals.length - 1]]
     if (typeof min !== 'number' && typeof min !== 'string') {
       throw new Error('Can only filter primitive axis values')
     }
-    let {start,stop} = condition
-    
+    let {start, stop} = condition
+
     // special handling
     if (isISODateAxis(domain, axisName)) {
-      [min,max] = [asTime(min), asTime(max)]
-      [start,stop] = [asTime(start), asTime(stop)]
+      [min, max] = [asTime(min), asTime(max)]
+      ;[start, stop] = [asTime(start), asTime(stop)]
     } else if (isLongitudeAxis(domain, axisName)) {
       let lonWrapper = getLongitudeWrapper(domain, axisName)
-      [start,stop] = [lonWrapper(start), lonWrapper(stop)]
+      ;[start, stop] = [lonWrapper(start), lonWrapper(stop)]
     }
-    
+
     if (min > max) {
-      [min,max] = [max,min]
+      [min, max] = [max, min]
     }
     if (max < start || stop < min) {
       return false
     }
   }
-  
+
   return true
 }
 

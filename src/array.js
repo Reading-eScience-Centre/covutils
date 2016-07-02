@@ -25,9 +25,9 @@ export function minMax (arr) {
   return [min, max]
 }
 
-/***
+/**
  * Return the indices of the two neighbors in the sorted array closest to the given number.
- * 
+ *
  * @example
  * var a = [2,5,8,12,13]
  * var i = CovUtils.indicesOfNearest(a, 6)
@@ -35,8 +35,8 @@ export function minMax (arr) {
  * var j = CovUtils.indicesOfNearest(a, 5)
  * // j == [1,1]
  * var k = CovUtils.indicesOfNearest(a, 50)
- * // k == [4,4] 
- * 
+ * // k == [4,4]
+ *
  * @param {Array<number>} a The array to search through. Must be sorted, ascending or descending.
  * @param {number} x The target number.
  * @return {[lo,hi]} The indices of the two closest values, may be equal.
@@ -79,7 +79,7 @@ export function indicesOfNearest (a, x) {
 
 /**
  * Return the index of the value closest to the given number in a sorted array.
- * 
+ *
  * @example
  * var a = [2,5,8,12,13]
  * var i = CovUtils.indexOfNearest(a, 6)
@@ -88,7 +88,7 @@ export function indicesOfNearest (a, x) {
  * // j == 2
  * var k = CovUtils.indexOfNearest(a, 50)
  * // k == 4
- * 
+ *
  * @param {Array<number>} a The array to search through. Must be sorted, ascending or descending.
  * @param {number} x The target number.
  * @return {number} The array index whose value is closest to `x`.

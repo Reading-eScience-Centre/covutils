@@ -28,6 +28,7 @@
   },
   "jspm": {
     "registry": "npm",
+    "format": "esm",
     "main": "src/index.js"
   },
   "scripts": {

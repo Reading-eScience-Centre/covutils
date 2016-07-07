@@ -23,8 +23,9 @@
   ],
   "dependencies": {
     "ndarray": "^1.0.18",
+    "uriproj": "^0.2.0",
     "point-in-big-polygon": "^2.0.0",
-    "topojson": "^1.6.26"
+    "topojson": "^1.6.26"    
   },
   "jspm": {
     "registry": "npm",

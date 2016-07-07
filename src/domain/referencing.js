@@ -1,3 +1,4 @@
+import * as uriproj from 'uriproj'
 import { COVJSON_DATATYPE_TUPLE, COVJSON_DATATYPE_POLYGON } from '../constants.js'
 
 const OPENGIS_CRS_PREFIX = 'http://www.opengis.net/def/crs/'
@@ -57,6 +58,8 @@ export function isEllipsoidalCRS (rs) {
 /**
  * Return a projection object based on the CRS found in the coverage domain.
  * If no CRS is found or it is unsupported, then ``undefined`` is returned.
+ * For non-built-in projections, this function returns already-cached projections
+ * that were loaded via {@link loadProjection}.
  *
  * A projection converts between geodetic lat/lon and projected x/y values.
  *
@@ -65,19 +68,74 @@ export function isEllipsoidalCRS (rs) {
  * [0,360]. The purpose of this is to make intercomparison between different coverages easier.
  *
  * The following limitations currently apply:
- * - only ellipsoidal CRSs are supported (lat/lon)
- * - only primitive axes and Tuple/Polygon composite axes are supported
+ * - only primitive axes and Tuple/Polygon composite axes are supported for lat/lon CRSs
+ * - only horizontal CRSs (2-dimensional) are supported for non-lat/lon CRSs
  *
  * @param {Domain} domain A coverage domain object.
- * @return {IProjection} A stripped-down leaflet IProjection object.
+ * @return {IProjection} A stripped-down Leaflet IProjection object.
  */
 export function getProjection (domain) {
-  let ref = domain.referencing.find(ref => isEllipsoidalCRS(ref.system))
-  if (!ref) {
-    // either no CRS found or not ellipsoidal
-    return
+  let isEllipsoidal = domain.referencing.some(ref => isEllipsoidalCRS(ref.system))
+  if (isEllipsoidal) {
+    return getLonLatProjection(domain)
   }
 
+  // try to get projection via uriproj library
+  let ref = getHorizontalCRSReferenceObject(domain)
+  if (!ref) {
+    throw new Error('No horizontal (2D) CRS found in coverage domain')
+  }
+
+  let uri = ref.system.id
+  let proj = uriproj.get(uri)
+  if (!proj) {
+    throw new Error('Projection ' + uri + ' not cached in uriproj, use loadProjection() instead')
+  }
+  return wrapProj4(proj)
+}
+
+/**
+ * Like {@link getProjection} but will also try to remotely load a projection definition via the uriproj library.
+ * On success, the loaded projection is automatically cached for later use and can be directly requested
+ * with {@link getProjection}.
+ *
+ * @param {Domain} domain A coverage domain object.
+ * @return {Promise<IProjection>} A Promise succeeding with a stripped-down Leaflet IProjection object.
+ */
+export function loadProjection (domain) {
+  try {
+    // we try the local one first so that we get our special lon/lat projection (which doesn't exist in uriproj)
+    return getProjection(domain)
+  } catch (e) {}
+
+  // try to load projection remotely via uriproj library
+  let ref = getHorizontalCRSReferenceObject(domain)
+  if (!ref) {
+    throw new Error('No horizontal (2D) CRS found in coverage domain')
+  }
+
+  let uri = ref.system.id
+  return uriproj.load(uri).then(proj => wrapProj4(proj))
+}
+
+/**
+ * Wraps a proj4 Projection object into an IProjection object.
+ */
+function wrapProj4 (proj) {
+  return {
+    project: ({lon, lat}) => {
+      let [x, y] = proj.forward([lon, lat])
+      return {x, y}
+    },
+    unproject: ({x, y}) => {
+      let [lon, lat] = proj.inverse([x, y])
+      return {lon, lat}
+    }
+  }
+}
+
+function getLonLatProjection (domain) {
+  let ref = domain.referencing.find(ref => isEllipsoidalCRS(ref.system))
   let lonIdx = LongitudeAxisIndex[ref.system.id]
   if (lonIdx > 1) {
     // this should never happen as longitude is always the first or second axis

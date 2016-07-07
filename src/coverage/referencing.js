@@ -11,11 +11,7 @@ import { getHorizontalCRSReferenceObject, getProjection } from '../domain/refere
  * Current limitations:
  * - only point-type coverage domains are supported (Tuple only)
  * - only horizontal CRSs (2-dimensional) are supported
- * - only ellipsoidal CRSs (lat/lon) are supported (restriction of getProjection() function of referencing module)
- *
- * Given the limitations, the current purpose for reprojection is simply to intercompare
- * a grid to a point coverage, or point to point, where both are in lat/lon but possibly
- * with a different longitude wrapping, e.g. [0,360] vs [-180,180].
+ * - non-lat/lon CRSs have to be pre-cached with loadProjection()
  *
  * @param {Coverage} cov The Coverage object to reproject.
  * @param {Domain} refDomain The reference domain from which the horizontal CRS is used.

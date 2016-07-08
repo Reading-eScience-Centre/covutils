@@ -40,7 +40,7 @@ export function stringifyUnit (unit, language) {
     if (scheme === 'http://www.opengis.net/def/uom/UCUM/') {
       if (symbol === 'Cel') {
         symbol = '°C'
-      } else if (unit === '1') {
+      } else if (symbol === '1') {
         symbol = ''
       }
     }

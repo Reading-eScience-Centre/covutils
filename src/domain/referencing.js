@@ -35,12 +35,11 @@ export function getReferenceObject (domain, component) {
  * Return the reference system connection object of the horizontal CRS of the domain,
  * or ``undefined`` if none found.
  * A horizontal CRS is either geodetic (typically ellipsoidal, meaning lat/lon)
- * or projected and has exactly two axes.
+ * or projected, and may be 2D or 3D (including height).
  */
 export function getHorizontalCRSReferenceObject (domain) {
   let isHorizontal = ref =>
-    ['GeodeticCRS', 'ProjectedCRS'].indexOf(ref.system.type) !== -1 &&
-    ref.components.length === 2
+    ['GeodeticCRS', 'ProjectedCRS'].indexOf(ref.system.type) !== -1
   let ref = domain.referencing.find(isHorizontal)
   return ref
 }
@@ -69,7 +68,6 @@ export function isEllipsoidalCRS (rs) {
  *
  * The following limitations currently apply:
  * - only primitive axes and Tuple/Polygon composite axes are supported for lat/lon CRSs
- * - only horizontal CRSs (2-dimensional) are supported for non-lat/lon CRSs
  *
  * @param {Domain} domain A coverage domain object.
  * @return {IProjection} A stripped-down Leaflet IProjection object.
@@ -83,7 +81,7 @@ export function getProjection (domain) {
   // try to get projection via uriproj library
   let ref = getHorizontalCRSReferenceObject(domain)
   if (!ref) {
-    throw new Error('No horizontal (2D) CRS found in coverage domain')
+    throw new Error('No horizontal CRS found in coverage domain')
   }
 
   let uri = ref.system.id
@@ -111,11 +109,22 @@ export function loadProjection (domain) {
   // try to load projection remotely via uriproj library
   let ref = getHorizontalCRSReferenceObject(domain)
   if (!ref) {
-    throw new Error('No horizontal (2D) CRS found in coverage domain')
+    throw new Error('No horizontal CRS found in coverage domain')
   }
 
   let uri = ref.system.id
   return uriproj.load(uri).then(proj => wrapProj4(proj))
+}
+
+/**
+ * Return the component names of the horizontal CRS of the domain.
+ *
+ * @example
+ * var [xComp,yComp] = getHorizontalCRSComponents(domain)
+ */
+export function getHorizontalCRSComponents (domain) {
+  let ref = getHorizontalCRSReferenceObject(domain)
+  return ref.components
 }
 
 /**

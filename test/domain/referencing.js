@@ -1,10 +1,11 @@
 // IE11 support
 import 'core-js/es6/symbol'
 
+import assert from 'assert'
 import {assertAlmostEqual} from '../util.js'
 import * as CovJSON from 'covjson-reader'
 
-import {loadProjection} from '../../src'
+import {loadProjection, getHorizontalCRSComponents} from '../../src'
 
 let covjsonGrid = () => ({
   "type" : "Coverage",
@@ -42,7 +43,7 @@ let covjsonGrid = () => ({
 
 describe("domain/referencing functions", () => {
   describe("#loadProjection", () => {
-    it('shall not modify the original coverage', () => {
+    it('shall load the correct projection', () => {
       return CovJSON.read(covjsonGrid())
         .then(cov => cov.loadDomain())
         .then(domain => {
@@ -53,6 +54,17 @@ describe("domain/referencing functions", () => {
             assertAlmostEqual(lat, 55.5, 3)
             assertAlmostEqual(lon, -1.54, 3)
           })
+        })
+    })
+  })
+  describe("#getHorizontalCRSComponentX|Y", () => {
+    it('shall return the correct components', () => {
+      return CovJSON.read(covjsonGrid())
+        .then(cov => cov.loadDomain())
+        .then(domain => {
+          let [x,y] = getHorizontalCRSComponents(domain)
+          assert.strictEqual(x, 'x')
+          assert.strictEqual(y, 'y')
         })
     })
   })

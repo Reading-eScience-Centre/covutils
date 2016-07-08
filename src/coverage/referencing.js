@@ -20,6 +20,9 @@ import { getHorizontalCRSReferenceObject, getProjection } from '../domain/refere
 export function reproject (cov, refDomain) {
   return cov.loadDomain().then(sourceDomain => {
     let sourceRef = getHorizontalCRSReferenceObject(sourceDomain)
+    if (sourceRef.components.length > 2) {
+      throw new Error('Reprojection not supported for >2D CRSs')
+    }
     // check that the CRS components don't refer to grid axes
     if (sourceRef.components.some(sourceDomain.axes.has)) {
       throw new Error('Grid reprojection not supported yet')
@@ -62,6 +65,9 @@ export function reproject (cov, refDomain) {
     newAxes.set(axis.key, newAxis)
 
     let targetRef = getHorizontalCRSReferenceObject(refDomain)
+    if (targetRef.components.length > 2) {
+      throw new Error('Reprojection not supported for >2D CRSs')
+    }
     let newReferencing = sourceDomain.referencing.map(ref => {
       if (ref === sourceRef) {
         return {

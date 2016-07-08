@@ -2,7 +2,7 @@
 
 JavaScript utilities for creating, transforming, and handling [Coverage Data objects](https://github.com/Reading-eScience-Centre/coverage-jsapi).
 
-[API docs](https://doc.esdoc.org/github.com/reading-escience-centre/covutils/)
+[API docs](https://doc.esdoc.org/github.com/Reading-eScience-Centre/covutils/)
 
 ## Usage
 

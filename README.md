@@ -6,13 +6,11 @@ JavaScript utilities for creating, transforming, and handling [Coverage Data obj
 
 ## Usage
 
-covutils can be used both on node.js and browsers.
-
-A browser version of this library is available on [npmcdn](https://npmcdn.com/covutils/).
+A minified bundle of this library is available on [npmcdn](https://npmcdn.com/covutils/).
 
 Usage is simple:
 ```html
-<script src="https://npmcdn.com/covutils@0.4/covutils.min.js"></script>
+<script src="https://npmcdn.com/covutils@0.5/covutils.min.js"></script>
 <script>
 var coverage = ... ;
 
@@ -31,9 +29,19 @@ CovUtils.maskByPolygon(coverage, polygon, ['x','y'])
 </script>
 ```
 
-If polygon-related functionality is not needed, then a lite browser version can be used instead:
+If polygon-related functionality is not needed, then a lite bundle can be used instead:
 ```html
-<script src="https://npmcdn.com/covutils@0.4/covutils-lite.min.js"></script>
+<script src="https://npmcdn.com/covutils@0.5/covutils-lite.min.js"></script>
+```
+
+### CommonJS/JSPM/ES6
+
+You may also use this library within common package managers as it is published on npm.
+
+An ES6 import may look like that:
+
+```js
+import {maskByPolygon} from 'covutils'
 ```
 
 ## Acknowledgments

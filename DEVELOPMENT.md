@@ -44,9 +44,7 @@ This will build the covutils[-lite].{src|min}.js files in the root project folde
 5. Run `npm publish`.
 6. Attach the `covutils[-lite].{src|min}.js` files to the GitHub release.
 
-The last two steps build and publish the package to the npm registry.
-This project is registered on http://www.jsdelivr.com such that on every new
-npm release, the minified browser bundle is made available automatically on the jsDelivr CDN.
+The 5th step builds and publishes the package to the npm registry.
 
 ## Code style
 

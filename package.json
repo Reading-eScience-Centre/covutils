@@ -1,6 +1,6 @@
 {
   "name": "covutils",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "license": "BSD-3-Clause",
   "description": "Utilities for creating, transforming, and handling Coverage Data objects.",
   "repository": {
@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "ndarray": "^1.0.18",
-    "uriproj": "^0.2.0",
+    "uriproj": "^0.2.1",
     "point-in-big-polygon": "^2.0.0",
     "topojson": "^1.6.26"    
   },
@@ -36,8 +36,7 @@
     "esdoc": "esdoc -c esdoc.json",
     "docs": "documentation build src/index.js -f html -o docs/",
     "transpile": "babel -d lib/ src/",
-    "test": "standard && npm run testnode && npm run testkarma",
-    "testnode": "mocha --recursive --compilers js:babel-register",
+    "test": "standard && npm run testkarma",
     "testkarma": "karma start --single-run",
     "karma": "karma start",
     "saucelabs": "karma start karma.conf-ci.js",

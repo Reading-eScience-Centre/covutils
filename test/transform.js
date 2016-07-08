@@ -76,12 +76,11 @@ describe("util/transform methods", () => {
       "type" : "Coverage",
       "domain" : {
         "type" : "Domain",
-        "profile": "Grid",
+        "domainType": "Grid",
         "axes": {
           "x" : { "values": [-10,5] },
           "y" : { "values": [40] }
         },
-        "rangeAxisOrder": ["y", "x"],
         "referencing": []
       },
       "parameters" : {
@@ -95,7 +94,9 @@ describe("util/transform methods", () => {
       },
       "ranges" : {
         "ICEC" : {
-          "type" : "Range",
+          "type" : "NdArray",
+          "axisNames": ["y", "x"],
+          "shape": [1, 2],
           "values" : [ 0.5, 0.6 ]
         }
       }

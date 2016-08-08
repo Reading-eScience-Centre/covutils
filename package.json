@@ -1,6 +1,6 @@
 {
   "name": "covutils",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "license": "BSD-3-Clause",
   "description": "Utilities for creating, transforming, and handling Coverage Data objects.",
   "repository": {
@@ -63,7 +63,7 @@
     "babelify": "^7.2.0",
     "browserify": "^11.0.1",
     "core-js": "^2.0.2",
-    "covjson-reader": "^0.12.1",
+    "covjson-reader": "^0.16.0",
     "esdoc": "^0.4.1",
     "esdoc-importpath-plugin": "0.0.1",
     "documentation": "^4.0.0-beta5",

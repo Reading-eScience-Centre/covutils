@@ -133,7 +133,7 @@ export function getHorizontalCRSComponents (domain) {
  */
 export function getHorizontalCRSCoordinateIDs (domain) {
   let ref = getHorizontalCRSReferenceObject(domain)
-  return ref.components
+  return ref.coordinates
 }
 
 /**

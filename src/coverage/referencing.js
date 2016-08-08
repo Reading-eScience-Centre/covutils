@@ -20,21 +20,21 @@ import { getHorizontalCRSReferenceObject, getProjection } from '../domain/refere
 export function reproject (cov, refDomain) {
   return cov.loadDomain().then(sourceDomain => {
     let sourceRef = getHorizontalCRSReferenceObject(sourceDomain)
-    if (sourceRef.components.length > 2) {
+    if (sourceRef.coordinates.length > 2) {
       throw new Error('Reprojection not supported for >2D CRSs')
     }
-    // check that the CRS components don't refer to grid axes
-    if (sourceRef.components.some(sourceDomain.axes.has)) {
+    // check that the CRS coordinate IDs don't refer to grid axes
+    if (sourceRef.coordinates.some(sourceDomain.axes.has)) {
       throw new Error('Grid reprojection not supported yet')
     }
-    let [xComp, yComp] = sourceRef.components
+    let [xComp, yComp] = sourceRef.coordinates
 
     // TODO reproject bounds
 
     // find the composite axis that contains the horizontal coordinates
     let axes = [...sourceDomain.axes.values()]
-    let axis = axes.find(axis => sourceRef.components.every(comp => axis.components.indexOf(comp) !== -1))
-    let [xCompIdx, yCompIdx] = [axis.components.indexOf(xComp), axis.components.indexOf(yComp)]
+    let axis = axes.find(axis => sourceRef.coordinates.every(comp => axis.coordinates.indexOf(comp) !== -1))
+    let [xCompIdx, yCompIdx] = [axis.coordinates.indexOf(xComp), axis.coordinates.indexOf(yComp)]
 
     // find the target CRS and get the projection
     let sourceProjection = getProjection(sourceDomain)
@@ -65,13 +65,13 @@ export function reproject (cov, refDomain) {
     newAxes.set(axis.key, newAxis)
 
     let targetRef = getHorizontalCRSReferenceObject(refDomain)
-    if (targetRef.components.length > 2) {
+    if (targetRef.coordinates.length > 2) {
       throw new Error('Reprojection not supported for >2D CRSs')
     }
     let newReferencing = sourceDomain.referencing.map(ref => {
       if (ref === sourceRef) {
         return {
-          components: sourceRef.components,
+          coordinates: sourceRef.coordinates,
           system: targetRef.system
         }
       } else {

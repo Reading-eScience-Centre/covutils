@@ -152,19 +152,19 @@ export function renameAxes (cov, mapping) {
   let domainWrapper = domain => {
     let newaxes = new Map()
     for (let [from, to] of mapping) {
-      let {dataType, components, values, bounds} = domain.axes.get(from)
+      let {dataType, coordinates, values, bounds} = domain.axes.get(from)
       let newaxis = {
         key: to,
         dataType,
-        components: components.map(c => mapping.has(c) ? mapping.get(c) : c),
+        coordinates: coordinates.map(c => mapping.has(c) ? mapping.get(c) : c),
         values,
         bounds
       }
       newaxes.set(to, newaxis)
     }
 
-    let newreferencing = domain.referencing.map(({components, system}) => ({
-      components: components.map(c => mapping.has(c) ? mapping.get(c) : c),
+    let newreferencing = domain.referencing.map(({coordinates, system}) => ({
+      coordinates: coordinates.map(c => mapping.has(c) ? mapping.get(c) : c),
       system
     }))
 

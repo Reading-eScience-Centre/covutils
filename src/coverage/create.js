@@ -135,16 +135,16 @@ export function fromXndarray (xndarr, options = {}) {
     referencing = []
     if (xndarr.coords.has('x') && xndarr.coords.has('y')) {
       referencing.push({
-        components: ['x', 'y'],
+        coordinates: ['x', 'y'],
         system: {
-          type: 'GeodeticCRS',
+          type: 'GeographicCRS',
           id: 'http://www.opengis.net/def/crs/OGC/1.3/CRS84'
         }
       })
     }
     if (xndarr.coords.has('t')) {
       referencing.push({
-        components: ['t'],
+        coordinates: ['t'],
         system: {
           type: 'TemporalRS',
           calendar: 'Gregorian'
@@ -161,7 +161,7 @@ export function fromXndarray (xndarr, options = {}) {
     }
     axes.set(axisName, {
       key: axisName,
-      components: [axisName],
+      coordinates: [axisName],
       values
     })
   }

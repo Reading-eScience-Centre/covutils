@@ -11,7 +11,7 @@ import { ensureClockwisePolygon, getPointInPolygonsFn } from '../domain/polygon.
  *
  * @param {Coverage} cov A Coverage object.
  * @param {Object} polygon A GeoJSON Polygon or MultiPolygon object.
- * @param {array} [axes=['x','y']] The grid axes corresponding to the polygon coordinate components.
+ * @param {array} [axes=['x','y']] The grid axes corresponding to the polygon coordinates.
  * @returns {Promise<Coverage>}
  */
 export function maskByPolygon (cov, polygon, axes = ['x', 'y']) {

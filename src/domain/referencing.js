@@ -13,7 +13,7 @@ const EPSG4326 = OPENGIS_CRS_PREFIX + 'EPSG/0/4326'
 const CRS84 = OPENGIS_CRS_PREFIX + 'OGC/1.3/CRS84'
 
 /** CRSs in which position is specified by geodetic latitude and longitude */
-const EllipsoidalCRSs = [EPSG4979, EPSG4326, CRS84]
+const GeographicCRSs = [EPSG4979, EPSG4326, CRS84]
 
 /** Position of longitude axis */
 const LongitudeAxisIndex = {
@@ -23,11 +23,11 @@ const LongitudeAxisIndex = {
 }
 
 /**
- * Return the reference system connection object for the given domain component,
+ * Return the reference system connection object for the given domain coordinate ID,
  * or undefined if none exists.
  */
-export function getReferenceObject (domain, component) {
-  let ref = domain.referencing.find(ref => ref.components.indexOf(component) !== -1)
+export function getReferenceObject (domain, coordinateId) {
+  let ref = domain.referencing.find(ref => ref.coordinates.indexOf(coordinateId) !== -1)
   return ref
 }
 
@@ -39,7 +39,7 @@ export function getReferenceObject (domain, component) {
  */
 export function getHorizontalCRSReferenceObject (domain) {
   let isHorizontal = ref =>
-    ['GeodeticCRS', 'ProjectedCRS'].indexOf(ref.system.type) !== -1
+    ['GeodeticCRS', 'GeographicCRS', 'GeocentricCRS', 'ProjectedCRS'].indexOf(ref.system.type) !== -1
   let ref = domain.referencing.find(isHorizontal)
   return ref
 }
@@ -49,9 +49,7 @@ export function getHorizontalCRSReferenceObject (domain) {
  * horizontal position is specified by geodetic latitude and longitude.
  */
 export function isEllipsoidalCRS (rs) {
-  // TODO should support unknown CRSs with embedded axis information
-  // this also covers the case when there is no ID property
-  return EllipsoidalCRSs.indexOf(rs.id) !== -1
+  return rs.type === 'GeographicCRS' || GeographicCRSs.indexOf(rs.id) !== -1
 }
 
 /**
@@ -117,12 +115,23 @@ export function loadProjection (domain) {
 }
 
 /**
- * Return the component names of the horizontal CRS of the domain.
+ * Return the coordinate IDs of the horizontal CRS of the domain.
  *
+ * @deprecated use getHorizontalCRSCoordinateIDs
  * @example
  * var [xComp,yComp] = getHorizontalCRSComponents(domain)
  */
 export function getHorizontalCRSComponents (domain) {
+  return getHorizontalCRSCoordinateIDs(domain)
+}
+
+/**
+ * Return the coordinate IDs of the horizontal CRS of the domain.
+ *
+ * @example
+ * var [xComp,yComp] = getHorizontalCRSCoordinateIDs(domain)
+ */
+export function getHorizontalCRSCoordinateIDs (domain) {
   let ref = getHorizontalCRSReferenceObject(domain)
   return ref.components
 }
@@ -151,7 +160,7 @@ function getLonLatProjection (domain) {
     throw new Error()
   }
 
-  let lonComponent = ref.components[lonIdx]
+  let lonComponent = ref.coordinates[lonIdx]
 
   // we find the min and max longitude occuring in the domain by inspecting the axis values
   // Note: this is inefficient for big composite axes.
@@ -174,8 +183,8 @@ function getLonLatProjection (domain) {
 
     // find the composite axis containing the longitude component
     let axes = [...domain.axes.values()]
-    let axis = axes.find(axis => axis.components.indexOf(lonComponent) !== -1)
-    let lonCompIdx = axis.components.indexOf(lonComponent)
+    let axis = axes.find(axis => axis.coordinates.indexOf(lonComponent) !== -1)
+    let lonCompIdx = axis.coordinates.indexOf(lonComponent)
 
     // scan the composite axis for min/max longitude values
     lonMin = Infinity
@@ -292,12 +301,12 @@ export function isLongitudeAxis (domain, axisName) {
 
   let crsId = ref.system.id
   // TODO should support unknown CRSs with embedded axis information
-  if (EllipsoidalCRSs.indexOf(crsId) === -1) {
+  if (GeographicCRSs.indexOf(crsId) === -1) {
     // this also covers the case when there is no ID property
     return false
   }
 
-  let compIdx = ref.components.indexOf(axisName)
+  let compIdx = ref.coordinates.indexOf(axisName)
   let isLongitude = LongitudeAxisIndex[crsId] === compIdx
   return isLongitude
 }

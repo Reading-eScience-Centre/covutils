@@ -93,7 +93,7 @@ export function subsetDomainByIndex (domain, constraints) {
 
     let newaxis = {
       dataType: axis.dataType,
-      components: axis.components,
+      coordinates: axis.coordinates,
       values: newcoords,
       bounds: newbounds
     }

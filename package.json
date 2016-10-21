@@ -83,7 +83,6 @@
     "rollup-plugin-uglify": "^1.0.1",
     "serve-static": "^1.10.0",
     "standard": "^8.4.0",
-    "uglify-js": "^2.4.24",
     "xndarray": "^0.3.0"
   }
 }

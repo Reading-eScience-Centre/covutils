@@ -1,5 +1,10 @@
 # covutils
 
+[![NPM version](http://img.shields.io/npm/v/covutils.svg)](https://npmjs.org/package/covutils) 
+[![dependencies Status](https://david-dm.org/Reading-eScience-Centre/covutils/status.svg)](https://david-dm.org/Reading-eScience-Centre/covutils)
+[![devDependencies Status](https://david-dm.org/Reading-eScience-Centre/covutils/dev-status.svg)](https://david-dm.org/reading-escience-centre/covutils?type=dev)
+[![Build Status](https://travis-ci.org/Reading-eScience-Centre/covutils.svg?branch=master)](https://travis-ci.org/Reading-eScience-Centre/covutils)
+
 JavaScript utilities for creating, transforming, and handling [Coverage Data objects](https://github.com/Reading-eScience-Centre/coverage-jsapi).
 
 [API docs](https://doc.esdoc.org/github.com/Reading-eScience-Centre/covutils/)
@@ -34,11 +39,11 @@ If polygon-related functionality is not needed, then a lite bundle can be used i
 <script src="https://unpkg.com/covutils@0.6/covutils-lite.min.js"></script>
 ```
 
-### CommonJS/JSPM/ES6
+### NPM
 
 You may also use this library within common package managers as it is published on npm.
 
-An ES6 import may look like that:
+An ES2015 import may look like that:
 
 ```js
 import {maskByPolygon} from 'covutils'

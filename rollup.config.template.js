@@ -9,7 +9,11 @@ export default options => {
   return {
     entry: 'src/index' + lite + '.js',
     plugins: [
-      babel({ babelrc: false, presets: ['es2015-rollup'], exclude: 'node_modules/**' }),
+      babel({
+        exclude: 'node_modules/**',
+        presets: [ [ 'es2015', { modules: false } ] ],
+        plugins: ['external-helpers']
+      }),
       nodeResolve({ jsnext: true, browser: true }),
       commonjs({ include: 'node_modules/**' }),
       // needed for proj4 (dependency of uriproj), not sure why

@@ -268,22 +268,22 @@ export function getLongitudeWrapper (domain, axisName) {
   }
 
   let vals = domain.axes.get(axisName).values
-  let lon_min = vals[0]
-  let lon_max = vals[vals.length - 1]
-  if (lon_min > lon_max) {
-    [lon_min, lon_max] = [lon_max, lon_min]
+  let lonMin = vals[0]
+  let lonMax = vals[vals.length - 1]
+  if (lonMin > lonMax) {
+    [lonMin, lonMax] = [lonMax, lonMin]
   }
 
-  let x_mid = (lon_max + lon_min) / 2
-  let x_min = x_mid - 180
-  let x_max = x_mid + 180
+  let xMid = (lonMax + lonMin) / 2
+  let xMin = xMid - 180
+  let xMax = xMid + 180
 
   return lon => {
-    if (x_min <= lon && lon <= x_max) {
+    if (xMin <= lon && lon <= xMax) {
       // directly return to avoid introducing rounding errors
       return lon
     } else {
-      return ((lon - x_min) % 360 + 360) % 360 + x_min
+      return ((lon - xMin) % 360 + 360) % 360 + xMin
     }
   }
 }

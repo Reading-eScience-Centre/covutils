@@ -4,6 +4,7 @@
 [![dependencies Status](https://david-dm.org/Reading-eScience-Centre/covutils/status.svg)](https://david-dm.org/Reading-eScience-Centre/covutils)
 [![devDependencies Status](https://david-dm.org/Reading-eScience-Centre/covutils/dev-status.svg)](https://david-dm.org/reading-escience-centre/covutils?type=dev)
 [![Build Status](https://travis-ci.org/Reading-eScience-Centre/covutils.svg?branch=master)](https://travis-ci.org/Reading-eScience-Centre/covutils)
+[![Inline docs](http://inch-ci.org/github/Reading-eScience-Centre/covutils.svg?branch=master)](http://inch-ci.org/github/Reading-eScience-Centre/covutils)
 
 JavaScript utilities for creating, transforming, and handling [Coverage Data objects](https://github.com/Reading-eScience-Centre/coverage-jsapi).
 
@@ -51,4 +52,4 @@ import {maskByPolygon} from 'covutils'
 
 ## Acknowledgments
 
-This library is developed within the [MELODIES project](http://www.melodiesproject.eu).
+This library has been developed within the [MELODIES project](http://www.melodiesproject.eu) and is maintained as open source software.

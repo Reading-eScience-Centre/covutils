@@ -19,9 +19,9 @@ module.exports = function(config) {
       base: 'SauceLabs',
       browserName: 'chrome'
     },
-    'SL_InternetExplorer': {
+    'SL_Edge': {
       base: 'SauceLabs',
-      browserName: 'internet explorer'
+      browserName: 'MicrosoftEdge'
     },
     'SL_FireFox': {
       base: 'SauceLabs',

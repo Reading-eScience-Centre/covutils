@@ -2,6 +2,7 @@
 /*.log
 /node_modules/
 /sauce.json
+/coverage
 /covutils*
 /docs/
 /.tern-project

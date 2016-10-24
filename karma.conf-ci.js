@@ -58,7 +58,18 @@ module.exports = function(config) {
     
     browserify: {
       transform: [
-        ['babelify', {presets: ['es2015']}]
+        ['babelify', { "presets": ["es2015"], "plugins": ["istanbul"] }]
+      ]
+    },
+
+    coverageReporter: {
+      reporters: [
+        {'type': 'text'},
+        {'type': 'lcovonly',
+         'subdir': function (browser) {
+           // normalize
+           return browser.toLowerCase().split(/[ /-]/)[0]
+         }}
       ]
     },
 
@@ -66,7 +77,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots', 'saucelabs'],
+    reporters: ['dots', 'saucelabs', 'coverage'],
 
 
     // web server port

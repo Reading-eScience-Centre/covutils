@@ -1,6 +1,3 @@
-// IE11 support
-import 'core-js/es6/symbol'
-
 import assert from 'assert'
 import {assertAlmostEqual} from '../util.js'
 import * as CovJSON from 'covjson-reader'

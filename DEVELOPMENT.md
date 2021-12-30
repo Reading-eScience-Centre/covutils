@@ -25,7 +25,7 @@ Tests can be automatically re-run on file changes. For that, instead start the l
 ```
 $ npm run karma
 ```
-and minimize the browser windows that popped up. Test output will appear in the shell.
+Test output will appear in the shell.
 
 ## Building a browser bundle
 

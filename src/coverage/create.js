@@ -6,6 +6,7 @@ import { subsetByIndex, subsetByValue } from './subset.js'
  * Wraps a Domain into a Coverage object by adding dummy parameter and range data.
  *
  * @param {Domain} domain the Domain object
+ * @param {object} [options] optional parameters
  * @param {array} [options.gridAxes] The horizontal grid axis names, used for checkerboard pattern.
  * @return {Coverage}
  */

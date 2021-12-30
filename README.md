@@ -1,11 +1,6 @@
 # covutils
 
 [![NPM version](http://img.shields.io/npm/v/covutils.svg)](https://npmjs.org/package/covutils) 
-[![dependencies Status](https://david-dm.org/Reading-eScience-Centre/covutils/status.svg)](https://david-dm.org/Reading-eScience-Centre/covutils)
-[![devDependencies Status](https://david-dm.org/Reading-eScience-Centre/covutils/dev-status.svg)](https://david-dm.org/reading-escience-centre/covutils?type=dev)
-[![Build Status](https://travis-ci.org/Reading-eScience-Centre/covutils.svg?branch=master)](https://travis-ci.org/Reading-eScience-Centre/covutils)
-[![codecov](https://codecov.io/gh/Reading-eScience-Centre/covutils/branch/master/graph/badge.svg)](https://codecov.io/gh/Reading-eScience-Centre/covutils)
-[![Inline docs](http://inch-ci.org/github/Reading-eScience-Centre/covutils.svg?branch=master)](http://inch-ci.org/github/Reading-eScience-Centre/covutils)
 
 JavaScript utilities for creating, transforming, and handling [Coverage Data objects](https://github.com/Reading-eScience-Centre/coverage-jsapi).
 
@@ -13,11 +8,11 @@ JavaScript utilities for creating, transforming, and handling [Coverage Data obj
 
 ## Usage
 
-A minified bundle of this library is available on [unpkg](https://unpkg.com/covutils/).
+A minified bundle of this library is available on [jsDelivr](https://www.jsdelivr.com/package/npm/covutils).
 
 Usage is simple:
 ```html
-<script src="https://unpkg.com/covutils@0.6/covutils.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/covutils@0.6/covutils.min.js"></script>
 <script>
 var coverage = ... ;
 
@@ -38,7 +33,7 @@ CovUtils.maskByPolygon(coverage, polygon, ['x','y'])
 
 If polygon-related functionality is not needed, then a lite bundle can be used instead:
 ```html
-<script src="https://unpkg.com/covutils@0.6/covutils-lite.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/covutils-lite@0.6/covutils.min.js"></script>
 ```
 
 ### NPM

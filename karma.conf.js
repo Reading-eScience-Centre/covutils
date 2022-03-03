@@ -1,3 +1,9 @@
+if (process.env.CI) {
+  BROWSERS =  ['ChromeHeadless', 'FirefoxHeadless']
+} else {
+  BROWSERS =  ['ChromeHeadless']
+}
+
 module.exports = function(config) {
   config.set({
 
@@ -27,7 +33,7 @@ module.exports = function(config) {
     
     browserify: {
       transform: [
-        ['babelify', { "presets": ["es2015"], "plugins": ["istanbul"] }]
+        ['babelify', { "plugins": ["istanbul"] }]
       ]
     },
 
@@ -46,7 +52,6 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress', 'coverage'],
-
 
     // web server port
     port: 9876,
@@ -67,7 +72,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome'],
+    browsers: BROWSERS,
 
 
     // Continuous Integration mode

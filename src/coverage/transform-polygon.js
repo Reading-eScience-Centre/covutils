@@ -9,9 +9,9 @@ import { ensureClockwisePolygon, getPointInPolygonsFn } from '../domain/polygon.
  * range values which belong to domain areas outside the
  * given polygon are returned as null (no data).
  *
- * @param {Coverage} cov A Coverage object.
+ * @param {Coverage} cov A Coverage object with geographic CRS.
  * @param {Object} polygon A GeoJSON Polygon or MultiPolygon object.
- * @param {array} [axes=['x','y']] The grid axes corresponding to the polygon coordinates.
+ * @param {array} [axes=['x','y']] The grid axes corresponding to longitude and latitude coordinates.
  * @returns {Promise<Coverage>}
  */
 export function maskByPolygon (cov, polygon, axes = ['x', 'y']) {

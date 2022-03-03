@@ -1,24 +1,22 @@
 import processPolygon from 'point-in-big-polygon'
-import { ringArea as ringAreaSpherical } from 'topojson/lib/topojson/spherical.js'
-import { ringArea as ringAreaCartesian } from 'topojson/lib/topojson/cartesian.js'
+import rewind from '@mapbox/geojson-rewind'
 
 /**
  * Modifies the point order of the given polygon rings such that the first ring is ordered
  * clockwise and all others anti-clockwise. Modification happens in-place.
+ * Coordinates must be in longitude-latitude order in degrees.
  *
  * @param {Array} rings - Polygon rings to reorder (in-place)
- * @param {boolean} [isCartesian=false] - whether coordinates are cartesian or spherical degrees
  */
-export function ensureClockwisePolygon (rings, isCartesian = false) {
+export function ensureClockwisePolygon (rings) {
   // first ring = exterior, clockwise
   // other rings = interior, anti-clockwise
-  let ringAreaFn = isCartesian ? ringAreaCartesian : ringAreaSpherical
-  for (let i = 0; i < rings.length; i++) {
-    let area = ringAreaFn(rings[i])
-    if ((i === 0 && area < 0) || (i > 0 && area > 0)) {
-      rings[i].reverse()
-    }
+  let gj = {
+    type: 'Polygon',
+    coordinates: rings
   }
+  let outerClockwise = true
+  rewind(gj, outerClockwise)
 }
 
 /**

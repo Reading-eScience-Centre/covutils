@@ -1,8 +1,10 @@
 {
-  "title": "covutils documentation",
   "source": "./src",
-  "destination": "./docs-esdoc",
+  "destination": "./docs",
   "plugins": [
+    {
+      "name": "esdoc-standard-plugin"
+    },
     {
       "name": "esdoc-importpath-plugin",
       "option": {
